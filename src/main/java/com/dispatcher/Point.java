@@ -1,5 +1,4 @@
 package com.dispatcher;
-
 import org.json.JSONObject;
 
 public class Point {

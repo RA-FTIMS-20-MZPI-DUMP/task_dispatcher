@@ -1,10 +1,8 @@
 package com.dispatcher;
-
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
@@ -48,7 +46,6 @@ public class Dispatcher {
         JSONArray jsonArray = fetchData("robots/tasks/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            System.out.println(jsonObject);
         }
     }
 
@@ -67,6 +64,11 @@ public class Dispatcher {
         JSONArray jsonArray = fetchData("robots/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
+            boolean noStartPosition = jsonObject.isNull("pose");
+            if (noStartPosition) {
+                System.out.println("No start position for robot");
+                continue;
+            }
             boolean available = jsonObject.getBoolean("available");
             if (available) {
                 this.robots.add(new Robot(jsonObject));

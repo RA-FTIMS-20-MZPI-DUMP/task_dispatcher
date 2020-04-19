@@ -10,10 +10,14 @@ public class Robot {
     private float velocity;
 
     Robot(JSONObject jsonObject) {
-        JSONArray functions = jsonObject.getJSONObject("extraRobotElement").getJSONArray("functionalityList");
-        for (int i = 0; i < functions.length(); i++) {
-            String function = functions.getJSONObject(i).getString("name");
-            this.functionality.add(function);
+        JSONObject extraElements = jsonObject.getJSONObject("extraRobotElement");
+        System.out.println(jsonObject);
+        if (!extraElements.isNull("functionalityList")) {
+            JSONArray functions = extraElements.getJSONArray("functionalityList");
+            for (int i = 0; i < functions.length(); i++) {
+                String function = functions.getJSONObject(i).getString("name");
+                this.functionality.add(function);
+            }
         }
         this.currentPosition = new Point(jsonObject);
         String velocity = jsonObject.getJSONObject("model").getString("maxVelocity").split("km")[0];
