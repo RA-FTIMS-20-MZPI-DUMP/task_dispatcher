@@ -1,17 +1,22 @@
 package com.dispatcher;
+
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 public class Dispatcher {
 
     private WebTarget webTarget;
-    private List<Robot> robots;
-    private List<Task> tasks;
+    private ArrayList<Robot> robots = new ArrayList<Robot>();
+    private ArrayList<Task> tasks = new ArrayList<Task>();
+    private HashMap<String, Point> points = new HashMap<String, Point>();
 
     private List<Robot> findUnused() {
         return null;
@@ -28,23 +33,53 @@ public class Dispatcher {
     private void initWebTarget() {
         ClientConfig clientConfig = new ClientConfig();
         HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic("dispatchTest", "gBrZzVbCbMsr");
-        clientConfig.register(feature) ;
+        clientConfig.register(feature);
         Client client = ClientBuilder.newClient(clientConfig);
         this.webTarget = client.target("http://adrastea.westus2.cloudapp.azure.com:3333/");
+    }
 
+    private JSONArray fetchData(String path) {
+        WebTarget data = this.webTarget.path(path);
+        String json = data.request(MediaType.APPLICATION_JSON).get(String.class);
+        return new JSONArray(json);
     }
 
     private void fetchTasks() {
-        WebTarget points =  this.webTarget.path("robots/tasks/all");
-        JsonArray jsonArray = points.request(MediaType.APPLICATION_JSON).get(JsonArray.class);
-        for (JsonObject jsonObject : jsonArray.getValuesAs(JsonObject.class)) {
+        JSONArray jsonArray = fetchData("robots/tasks/all");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
             System.out.println(jsonObject);
         }
+    }
+
+    private void fetchPoints() {
+        JSONArray jsonArray = fetchData("movement/stands/all");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            this.points.put(
+                jsonObject.getString("id"),
+                new Point(jsonObject)
+            );
+        }
+    }
+
+    private void fetchAvailableRobots() {
+        JSONArray jsonArray = fetchData("robots/all");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            boolean available = jsonObject.getBoolean("available");
+            if (available) {
+                this.robots.add(new Robot(jsonObject));
+            }
+        }
+
     }
 
     public void assignTasks() {
         this.initWebTarget();
         this.fetchTasks();
+        this.fetchAvailableRobots();
+        this.fetchPoints();
     }
 
 }
