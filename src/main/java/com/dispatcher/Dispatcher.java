@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class Dispatcher {
 
     private WebTarget webTarget;
-    private ArrayList<Robot> robots = new ArrayList<Robot>();
+    private ArrayList<Robot> availableRobots = new ArrayList<Robot>();
     private ArrayList<Task> tasks = new ArrayList<Task>();
     private HashMap<String, Point> points = new HashMap<String, Point>();
 
@@ -46,6 +46,7 @@ public class Dispatcher {
         JSONArray jsonArray = fetchData("robots/tasks/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
+            this.tasks.add(new Task(jsonObject, this.points));
         }
     }
 
@@ -71,7 +72,7 @@ public class Dispatcher {
             }
             boolean available = jsonObject.getBoolean("available");
             if (available) {
-                this.robots.add(new Robot(jsonObject));
+                this.availableRobots.add(new Robot(jsonObject));
             }
         }
 
@@ -79,9 +80,15 @@ public class Dispatcher {
 
     public void assignTasks() {
         this.initWebTarget();
-        this.fetchTasks();
-        this.fetchAvailableRobots();
         this.fetchPoints();
+        this.fetchAvailableRobots();
+        this.fetchTasks();
+        for (Robot robot : this.availableRobots) {
+            for (Task task: this.tasks) {
+                Double time = robot.getTaskExecutionTime(task);
+                System.out.printf("Robot: %s Task: %s Execution time: %f\n", robot.getId(), task.getName(), time);
+            }
+        }
     }
 
 }
