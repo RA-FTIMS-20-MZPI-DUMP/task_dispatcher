@@ -9,6 +9,7 @@ public class Robot {
     private Point currentPosition;
     private ArrayList<String> functionality = new ArrayList<String>();
     private float velocity;
+    private Task currentTask; //aktualnie wykonywane zadanie
 
     Robot(JSONObject jsonObject) {
         this.id = jsonObject.getString("id");
@@ -35,5 +36,13 @@ public class Robot {
 
     public String getId() {
         return id;
+    }
+
+    public Task getCurrentTask() {
+        return currentTask;
+    }
+
+    public void setCurrentTask(Task currentTask) {
+        this.currentTask = currentTask;
     }
 }

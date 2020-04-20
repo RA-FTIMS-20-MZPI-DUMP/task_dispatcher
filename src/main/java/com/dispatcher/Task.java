@@ -2,6 +2,9 @@ package com.dispatcher;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class Task {
@@ -11,6 +14,8 @@ public class Task {
     private float time = 0;
     private Point start;
     private Point end;
+    private LocalDateTime executionStart; //rozpoczęcie wykonywania zadania
+    private LocalDateTime appearanceTime; //pojawienie się zadania na liście do wykonania
 
     public enum BehaviourType {
         GO_TO, DOCK, WAIT, DOCKING;
@@ -41,6 +46,7 @@ public class Task {
                 this.time += parameters.getInt("time");
             }
         }
+        appearanceTime = LocalDateTime.now();
     }
 
     public boolean isJSONValid(String test) {
@@ -68,6 +74,10 @@ public class Task {
         return priority;
     }
 
+    public void setPriority(int priority){
+        this.priority = priority;
+    }
+
     public String getName() {
         return name;
     }
@@ -78,5 +88,17 @@ public class Task {
 
     public Point getStart() {
         return start;
+    }
+
+    public LocalDateTime getExecutionStart() {
+        return executionStart;
+    }
+
+    public void setExecutionStart(LocalDateTime executionStart) {
+        this.executionStart = executionStart;
+    }
+
+    public LocalDateTime getAppearanceTime() {
+        return appearanceTime;
     }
 }
