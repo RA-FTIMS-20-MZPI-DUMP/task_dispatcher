@@ -14,7 +14,6 @@ public class Robot {
     Robot(JSONObject jsonObject) {
         this.id = jsonObject.getString("id");
         JSONObject extraElements = jsonObject.getJSONObject("extraRobotElement");
-        System.out.println(jsonObject);
         if (!extraElements.isNull("functionalityList")) {
             JSONArray functions = extraElements.getJSONArray("functionalityList");
             for (int i = 0; i < functions.length(); i++) {
@@ -45,4 +44,5 @@ public class Robot {
     public void setCurrentTask(Task currentTask) {
         this.currentTask = currentTask;
     }
+
 }

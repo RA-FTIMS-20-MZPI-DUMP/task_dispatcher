@@ -8,10 +8,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class Task {
+    private String id;
     private String name;
     private int priority;
     private double distance = 0;
     private float time = 0;
+    private String status;
     private Point start;
     private Point end;
     private LocalDateTime executionStart; //rozpoczęcie wykonywania zadania
@@ -21,9 +23,13 @@ public class Task {
         GO_TO, DOCK, WAIT, DOCKING;
     }
 
+    Task() {}
+
     Task(JSONObject jsonObject, HashMap<String, Point> points) {
+        this.id = jsonObject.getString("id");
         this.name = jsonObject.getString("name");
         this.priority = jsonObject.getJSONObject("priority").getInt("weight");
+        this.status = jsonObject.getString("status");
         JSONArray behaviours = jsonObject.getJSONArray("behaviours");
         for (int i=0; i<behaviours.length(); i++) {
             JSONObject behaviour = behaviours.getJSONObject(i);
@@ -66,6 +72,8 @@ public class Task {
         return time;
     }
 
+    public void setTime(int time){ this.time = time;}
+
     public double getDistance() {
         return distance;
     }
@@ -101,4 +109,13 @@ public class Task {
     public LocalDateTime getAppearanceTime() {
         return appearanceTime;
     }
+
+    public String getId() { return id; }
+
+    public void setId(String id) { this.id = id; }
+
+    public String getStatus() { return status; }
+
+    public void setStatus(String status) { this.status = status; }
+
 }
