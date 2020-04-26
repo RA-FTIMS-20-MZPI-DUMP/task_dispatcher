@@ -92,8 +92,12 @@ public class Dispatcher {
             }
             boolean available = jsonObject.getBoolean("available");
             if (available) {
-                Robot newRobot = new Robot(jsonObject);
-                availableRobots.add(newRobot);
+                try {
+                    Robot newRobot = new Robot(jsonObject);
+                    availableRobots.add(newRobot);
+                } catch (Exception e) {
+                    System.out.println("Error in robot data");
+                }
             }
         }
     }
