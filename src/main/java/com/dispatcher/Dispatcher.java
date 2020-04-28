@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class Dispatcher {
@@ -113,25 +114,33 @@ public class Dispatcher {
 
     // zwraca następne zadanie do wykonania
     private Task chooseTask() {
-        Task taskToDo = new Task();
-        for (Task task : this.tasks){ // inicjalizacja zadania pierwszym z brzegu
-            if (task.getStatus().equals("new")){
-                taskToDo = task;
-                break;
-            }
-        }
+//        Task taskToDo = new Task();
+//        for (Task task : this.tasks){ // inicjalizacja zadania pierwszym z brzegu
+//            if (task.getStatus().equals("new")){
+//                taskToDo = task;
+//                break;
+//            }
+//        }
+//
+//        for (Task task : this.tasks) { // wybranie zadania z najwyzszym priorytetem i najszybszym czasem
+//            if (task.getStatus().equals("new") && task.getPriority() < taskToDo.getPriority()){
+//                taskToDo = task;
+//            }
+//            if (task.getStatus().equals("new") && task.getPriority() == taskToDo.getPriority()){
+//                if (task.getTime() < taskToDo.getTime()){
+//                    taskToDo = task;
+//                }
+//            }
+//        }
+        this.tasks.sort(new PriorityComparator());
+        return this.tasks.get(0);
+    }
 
-        for (Task task : this.tasks) { // wybranie zadania z najwyzszym priorytetem i najszybszym czasem
-            if (task.getStatus().equals("new") && task.getPriority() < taskToDo.getPriority()){
-                taskToDo = task;
-            }
-            if (task.getStatus().equals("new") && task.getPriority() == taskToDo.getPriority()){
-                if (task.getTime() < taskToDo.getTime()){
-                    taskToDo = task;
-                }
-            }
+    public class PriorityComparator implements Comparator<Task> {
+        @Override
+        public int compare(Task t1, Task t2) {
+            return t2.getPriority() - t1.getPriority();
         }
-        return taskToDo;
     }
 
     // aktualizacja priorytetów jeśli zadanie oczekuje wiecej niz 30 sekund
