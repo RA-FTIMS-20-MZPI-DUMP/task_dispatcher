@@ -55,8 +55,11 @@ public class Dispatcher {
        // updateRobot(availableRobots.get(i).getId(), "status", "charging needed");
         if (availableRobots.size() > 0) {
             return availableRobots.get(0);
+        } else {
+            System.out.println("No available robots");
+            System.exit(1);
+            return null;
         }
-        return null;
     }
 
     private boolean findRobot(String id){
@@ -133,7 +136,9 @@ public class Dispatcher {
 //            }
 //        }
         this.tasks.sort(new PriorityComparator());
-        return this.tasks.get(0);
+        Task chosenTask = this.tasks.get(0);
+        this.tasks.remove(chosenTask);
+        return chosenTask;
     }
 
     public class PriorityComparator implements Comparator<Task> {
