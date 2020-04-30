@@ -26,7 +26,7 @@ public class Robot {
         this.currentPosition = new Point(jsonObject);
         String velocity = jsonObject.getJSONObject("model").getString("maxVelocity").split("km")[0];
         //this.velocity = Float.parseFloat(velocity) * 1000 / 3600 * 3 / 4;
-        this.velocity = 0.9;
+        this.velocity = 0.09;
     }
 
     public int getTaskExecutionTime(Task task) {

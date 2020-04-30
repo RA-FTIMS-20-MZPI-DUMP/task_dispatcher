@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Dispatcher extends TimerTask {
@@ -16,6 +17,7 @@ public class Dispatcher extends TimerTask {
     private HashMap<String, Point> points = new HashMap<String, Point>();
     private long nextCheckTime = 60000;
     static Timer timer = new Timer();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     public Dispatcher(ArrayList<Robot> busyRobots) {
         this.busyRobots = busyRobots;
@@ -102,7 +104,9 @@ public class Dispatcher extends TimerTask {
         JSONArray jsonArray = fetchData("robots/tasks/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            this.tasks.add(new Task(jsonObject, this.points));
+            if (jsonObject.getString("status").compareTo("done") != 0) {
+                this.tasks.add(new Task(jsonObject, this.points));
+            }
         }
     }
 
@@ -160,7 +164,9 @@ public class Dispatcher extends TimerTask {
         for (Robot robot: new ArrayList<Robot>(this.busyRobots)) {
             if (robot.getAvailableOn().before(new Date())) {
                 updateRobotAvailability(robot.getId(), true);
-                updateTaskStatus(robot.getCurrentTask().getId(), "done");
+                String currentTaskId = robot.getCurrentTask().getId();
+                updateTaskStatus(currentTaskId, "done");
+                System.out.println("Done task " + currentTaskId);
             }
             this.busyRobots.remove(robot);
         }
@@ -174,6 +180,7 @@ public class Dispatcher extends TimerTask {
         chosenRobot.setCurrentTask(chosenTask);
         System.out.println("Estimated working time is: " + executionTime + " ms");
         Date availableOn = new Date(new Date().getTime() + executionTime);
+        System.out.println("Task will be end: " + sdf.format(availableOn));
         chosenRobot.setAvailableOn(availableOn);
         updateTaskStatus(chosenTask.getId(), "in progress");
         updateRobotAvailability(chosenRobot.getId(), false);
@@ -188,21 +195,26 @@ public class Dispatcher extends TimerTask {
             System.out.println("Brak dostępnych robotów, ponowne uruchomienie algorytmu za 30 sekund");
             this.nextCheckTime = 30000;
             return;
-        }
-        Date nextUpdate = this.busyRobots.stream().map(Robot::getAvailableOn).min(Date::compareTo).get();
-        long difference = new Date().getTime() - nextUpdate.getTime();
-        if (difference > 0) {
-            System.out.println("Uruchamiam ponownie algorytm za " + difference + " ms");
-            this.nextCheckTime = difference;
         } else {
-            this.nextCheckTime = 1;
+            Date nextUpdate = this.busyRobots.stream().map(Robot::getAvailableOn).min(Date::compareTo).get();
+            long difference = getDateDiff(nextUpdate, new Date());
+            if (difference > 0) {
+                this.nextCheckTime = difference;
+            } else {
+                this.nextCheckTime = 1;
+            }
         }
+        System.out.println("Algorithm restart in " + nextCheckTime + " ms ");
     }
 
     public void run() {
         this.assignTasks();
         this.updateNextCheckTime();
         timer.schedule(new Dispatcher(this.busyRobots), this.nextCheckTime);
+    }
+
+    public static long getDateDiff(Date date1, Date date2) {
+        return date2.getTime() - date1.getTime();
     }
 
 }
