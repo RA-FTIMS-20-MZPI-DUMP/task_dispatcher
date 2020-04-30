@@ -16,8 +16,6 @@ public class Task {
     private String status;
     private Point start;
     private Point end;
-    private LocalDateTime executionStart; //rozpoczęcie wykonywania zadania
-    private LocalDateTime appearanceTime; //pojawienie się zadania na liście do wykonania
 
     public enum BehaviourType {
         GO_TO, DOCK, WAIT, DOCKING;
@@ -52,7 +50,6 @@ public class Task {
                 this.time += parameters.getInt("time");
             }
         }
-        appearanceTime = LocalDateTime.now();
     }
 
     public boolean isJSONValid(String test) {
@@ -72,8 +69,6 @@ public class Task {
         return time;
     }
 
-    public void setTime(int time){ this.time = time;}
-
     public double getDistance() {
         return distance;
     }
@@ -82,40 +77,11 @@ public class Task {
         return priority;
     }
 
-    public void setPriority(int priority){
-        this.priority = priority;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Point getEnd() {
-        return end;
-    }
-
     public Point getStart() {
         return start;
     }
 
-    public LocalDateTime getExecutionStart() {
-        return executionStart;
-    }
-
-    public void setExecutionStart(LocalDateTime executionStart) {
-        this.executionStart = executionStart;
-    }
-
-    public LocalDateTime getAppearanceTime() {
-        return appearanceTime;
-    }
-
     public String getId() { return id; }
 
-    public void setId(String id) { this.id = id; }
-
-    public String getStatus() { return status; }
-
-    public void setStatus(String status) { this.status = status; }
 
 }

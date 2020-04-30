@@ -1,106 +1,62 @@
 package com.dispatcher;
-
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.ClientResponse;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
-public class Dispatcher {
+public class Dispatcher extends TimerTask {
 
     private WebTarget webTarget;
-    private ArrayList<Robot> availableRobots = new ArrayList<Robot>(); //dostepne roboty
-    private ArrayList<Robot> robotsWithTasks = new ArrayList<Robot>(); //zajete roboty
+    private ArrayList<Robot> robots = new ArrayList<Robot>(); //dostepne roboty
+    private ArrayList<Robot> busyRobots = new ArrayList<Robot>(); //zajete roboty
     private ArrayList<Task> tasks = new ArrayList<Task>(); //zadania
     private HashMap<String, Point> points = new HashMap<String, Point>();
+    private long nextCheckTime = 60000;
+    static Timer timer = new Timer();
 
-    // + sprawdzanie czy jest kontakt z robotami - może Paweł przez Websocketa?
-    // + sprawdzanie czy robot nie utknął - nie mam pojęcia :(
+    public Dispatcher(ArrayList<Robot> busyRobots) {
+        this.busyRobots = busyRobots;
+    }
 
-    // zwraca roboty, które skończą zadania za mniej niż 10 sekund
-    // a przy okazji sprawdza któryś z robotów już skończył zadanie i zmienia mu statusy
-    private void findFinishingRobots() throws IOException {
-        try {
-            for(int i=0; i<robotsWithTasks.size(); i++) {
-            Duration duration = Duration.between(robotsWithTasks.get(i).getCurrentTask().getExecutionStart(), LocalDateTime.now());
-            long seconds = duration.getSeconds();
-            if (robotsWithTasks.get(i).getCurrentTask().getTime() - seconds <= 0) {
-                robotsWithTasks.get(i).getCurrentTask().setStatus("done");
-                updateTaskStatus(robotsWithTasks.get(i).getCurrentTask().getId(), "done");
-                robotsWithTasks.get(i).setCurrentTask(null);
-                if(!findRobot(robotsWithTasks.get(i).getId())) {
-                    availableRobots.add(robotsWithTasks.get(i));
-                }
-                updateRobotAvailability(robotsWithTasks.get(i).getId(), true);
-                robotsWithTasks.remove(robotsWithTasks.get(i));
-            } else if (robotsWithTasks.get(i).getCurrentTask().getTime() - seconds <= 10) {
-                availableRobots.add(robotsWithTasks.get(i));
-            } } }
-            catch(Exception ex){
-                ex.printStackTrace();
-            }
-        }
+    public Dispatcher() {}
 
-    // zwraca robota, który ma wykonac zadanie
+
     private Robot chooseRobot(Task task) {
-       // musi tu byc sprawdzenie poziomu baterii - jesli jest nizszy niz 10% wtedy:
-       // updateRobot(availableRobots.get(i).getId(), "status", "charging needed");
-        if (availableRobots.size() > 0) {
-            return availableRobots.get(0);
-        } else {
-            System.out.println("No available robots");
-            System.exit(1);
-            return null;
-        }
+        //TODO
+        //Wybranie robota na podstawie czasu zakończenia zadania
+        //Teraz zwraca pierwszy z listy
+        return robots.get(0);
     }
 
-    private boolean findRobot(String id){
-        for (int i=0; i<availableRobots.size(); i++){
-            if(availableRobots.get(i).getId().equals(id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // zwraca wolne roboty z bazy (!!! nie mogą mieć zadnych nulli poza battery !!!)
     private void fetchAvailableRobots() {
         JSONArray jsonArray = fetchData("robots/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String robotId = jsonObject.getString("id");
             boolean noStartPosition = jsonObject.isNull("pose");
             if (noStartPosition) {
-                System.out.println("No start position for robot");
+                System.out.println("No start position for robot " + robotId);
                 continue;
             }
 
             if(jsonObject.isNull("robotIp")){
-                System.out.println("Unknown robot IP");
-                continue;
-            }
-            if(jsonObject.getJSONObject("model").isNull("maxVelocity")){
-                System.out.println("Unknown max velocity");
+                System.out.println("Unknown robot IP " + robotId);
                 continue;
             }
             if(jsonObject.isNull("batteryLevel")){
-                System.out.println("Unknown battery level");
+                System.out.println("Unknown battery level " + robotId);
                 continue;
             }
             boolean available = jsonObject.getBoolean("available");
             if (available) {
                 try {
                     Robot newRobot = new Robot(jsonObject);
-                    availableRobots.add(newRobot);
+                    robots.add(newRobot);
                 } catch (Exception e) {
-                    System.out.println("Error in robot data");
+                    System.out.println("Error in robot data " + robotId);
                 }
             }
         }
@@ -113,28 +69,7 @@ public class Dispatcher {
         update.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(status.toString()));
     }
 
-
-
-    // zwraca następne zadanie do wykonania
     private Task chooseTask() {
-//        Task taskToDo = new Task();
-//        for (Task task : this.tasks){ // inicjalizacja zadania pierwszym z brzegu
-//            if (task.getStatus().equals("new")){
-//                taskToDo = task;
-//                break;
-//            }
-//        }
-//
-//        for (Task task : this.tasks) { // wybranie zadania z najwyzszym priorytetem i najszybszym czasem
-//            if (task.getStatus().equals("new") && task.getPriority() < taskToDo.getPriority()){
-//                taskToDo = task;
-//            }
-//            if (task.getStatus().equals("new") && task.getPriority() == taskToDo.getPriority()){
-//                if (task.getTime() < taskToDo.getTime()){
-//                    taskToDo = task;
-//                }
-//            }
-//        }
         this.tasks.sort(new PriorityComparator());
         Task chosenTask = this.tasks.get(0);
         this.tasks.remove(chosenTask);
@@ -146,25 +81,6 @@ public class Dispatcher {
         public int compare(Task t1, Task t2) {
             return t2.getPriority() - t1.getPriority();
         }
-    }
-
-    // aktualizacja priorytetów jeśli zadanie oczekuje wiecej niz 30 sekund
-    private void updatePriority() {
-        try {
-            for (Task task : this.tasks) {
-                Duration duration = Duration.between(task.getAppearanceTime(), LocalDateTime.now());
-                long seconds = duration.getSeconds();
-                if (seconds > 30 && task.getStatus().equals("new")) {
-                    if (task.getPriority() != 1) {
-                        task.setPriority(task.getPriority() - 1);
-                        updateTaskPriority(task.getId(), task.getPriority());
-                    }
-                }
-            }
-        }
-         catch(Exception ex){
-                ex.printStackTrace();
-            }
     }
 
     private void updateTaskStatus(String id, String value) {
@@ -190,8 +106,6 @@ public class Dispatcher {
         }
     }
 
-
-    // inicjalizacja połączenia
     private void initWebTarget() {
         ClientConfig clientConfig = new ClientConfig();
         HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic("dispatchTest", "gBrZzVbCbMsr");
@@ -209,7 +123,6 @@ public class Dispatcher {
     private JSONObject fetchObject(String path, String id) {
         WebTarget data = this.webTarget.path(path + id);
         String json = data.request(MediaType.APPLICATION_JSON).get(String.class);
-        System.out.println(json);
         return new JSONObject(json);
     }
 
@@ -225,32 +138,69 @@ public class Dispatcher {
         }
     }
 
+    private void sendRobotsToCharge() {
+        //TODO
+        //Sprawdz czy jakis robot potrzebuje ładowania, jeśli tak to trzeba go usunąc z availableRobots i chyba wyslac do ladowania
+        //Chyba trzeba tez ustawic w bazie avaiable = false
+    }
+
     public void assignTasks() {
-       try {
-           this.initWebTarget();
-           this.fetchPoints();
-           this.fetchAvailableRobots(); // wybranie robotów z bazy
-           this.findFinishingRobots(); // wybranie robotów, które kończą zadanie
-           this.fetchTasks(); // wybranie zadań z bazy
-           this.updatePriority(); // aktualizacja priorytetów
-           Task toDo = chooseTask(); // wybranie zadania do wykonania
-           if (toDo != null){
-               Robot chosenRobot = chooseRobot(toDo); // wybranie robota do wykonania zadania
-               chosenRobot.setCurrentTask(toDo);
-               robotsWithTasks.add(chosenRobot);
-               availableRobots.remove(chosenRobot);
-               updateRobotAvailability(chosenRobot.getId(), false);
-               toDo.setStatus("in progress");
-               updateTaskStatus(toDo.getId(),  "in progress");
-               // tu wysłanie komunikatu do robota
-               toDo.setExecutionStart(LocalDateTime.now());
-               Double time = chosenRobot.getTaskExecutionTime(toDo);
-               System.out.printf("Robot: %s Task: %s Execution time: %f\n", chosenRobot.getId(), toDo.getName(), time);
-           }
+       this.initWebTarget();
+       this.restoreRobotsAndTasks();
+       this.fetchPoints();
+       this.fetchAvailableRobots();
+       this.sendRobotsToCharge();
+       this.fetchTasks();
+       while (robots.size() > 0 && tasks.size() > 0) {
+            chooseRobotAndTask();
        }
-        catch(Exception ex){
-           ex.printStackTrace();
+    }
+
+    private void restoreRobotsAndTasks() {
+        for (Robot robot: new ArrayList<Robot>(this.busyRobots)) {
+            if (robot.getAvailableOn().before(new Date())) {
+                updateRobotAvailability(robot.getId(), true);
+                updateTaskStatus(robot.getCurrentTask().getId(), "done");
+            }
+            this.robots.remove(robot);
         }
+    }
+
+    private void chooseRobotAndTask() {
+        Task chosenTask = this.chooseTask();
+        Robot chosenRobot = this.chooseRobot(chosenTask);
+        System.out.println("Chosen robot: " + chosenRobot.getId() + " for task: " + chosenTask.getId());
+        int executionTime = chosenRobot.getTaskExecutionTime(chosenTask);
+        chosenRobot.setCurrentTask(chosenTask);
+        System.out.println("Estimated working time is: " + executionTime + " ms");
+        Date availableOn = new Date(System.currentTimeMillis() + executionTime);
+        chosenRobot.setAvailableOn(availableOn);
+        updateTaskStatus(chosenTask.getId(), "in progress");
+        updateRobotAvailability(chosenRobot.getId(), false);
+        busyRobots.add(chosenRobot);
+        robots.remove(chosenRobot);
+        tasks.remove(chosenTask);
+    }
+
+
+    public void updateNextCheckTime() {
+        if (this.busyRobots.size() == 0) {
+            this.nextCheckTime = 30000;
+            return;
+        }
+        Date nextUpdate = this.busyRobots.stream().map(Robot::getAvailableOn).min(Date::compareTo).get();
+        long difference = new Date().getTime() - nextUpdate.getTime();
+        if (difference > 0) {
+            this.nextCheckTime = difference;
+        } else {
+            this.nextCheckTime = 1;
+        }
+    }
+
+    public void run() {
+        this.assignTasks();
+        this.updateNextCheckTime();
+        timer.schedule(new Dispatcher(this.busyRobots), this.nextCheckTime);
     }
 
 }

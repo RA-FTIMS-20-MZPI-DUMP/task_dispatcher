@@ -2,14 +2,16 @@ package com.dispatcher;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Robot {
 
     private String id;
     private Point currentPosition;
     private ArrayList<String> functionality = new ArrayList<String>();
-    private float velocity;
-    private Task currentTask; //aktualnie wykonywane zadanie
+    private double velocity;
+    private Task currentTask;
+    private Date availableOn;
 
     Robot(JSONObject jsonObject) {
         this.id = jsonObject.getString("id");
@@ -23,15 +25,19 @@ public class Robot {
         }
         this.currentPosition = new Point(jsonObject);
         String velocity = jsonObject.getJSONObject("model").getString("maxVelocity").split("km")[0];
-        this.velocity = Float.parseFloat(velocity) * 1000 / 3600 * 3 / 4;
+        //this.velocity = Float.parseFloat(velocity) * 1000 / 3600 * 3 / 4;
+        this.velocity = 0.9;
     }
 
-    public double getTaskExecutionTime(Task task) {
+    public int getTaskExecutionTime(Task task) {
         double distances = task.getDistance();
         float time = task.getTime();
         distances += currentPosition.getDistance(task.getStart());
-        return time + distances / this.velocity;
+        double sumTime = time * 1000 + distances / this.velocity;
+        return (int) Math.round(sumTime);
     }
+
+
 
     public String getId() {
         return id;
@@ -45,4 +51,11 @@ public class Robot {
         this.currentTask = currentTask;
     }
 
+    public void setAvailableOn(Date availableOn) {
+        this.availableOn = availableOn;
+    }
+
+    public Date getAvailableOn() {
+        return this.availableOn;
+    }
 }
