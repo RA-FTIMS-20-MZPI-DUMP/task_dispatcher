@@ -7,6 +7,7 @@ import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Dispatcher extends TimerTask {
 
@@ -18,6 +19,11 @@ public class Dispatcher extends TimerTask {
     private long nextCheckTime = 60000;
     static Timer timer = new Timer();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
 
     public Dispatcher(ArrayList<Robot> busyRobots) {
         this.busyRobots = busyRobots;
@@ -40,25 +46,26 @@ public class Dispatcher extends TimerTask {
             String robotId = jsonObject.getString("id");
             boolean noStartPosition = jsonObject.isNull("pose");
             if (noStartPosition) {
-                System.out.println("No start position for robot " + robotId);
+                System.out.println(ANSI_RED + "No start position for robot " + robotId);
                 continue;
             }
 
             if(jsonObject.isNull("robotIp")){
-                System.out.println("Unknown robot IP " + robotId);
+                System.out.println(ANSI_RED + "Unknown robot IP " + robotId);
                 continue;
             }
             if(jsonObject.isNull("batteryLevel")){
-                System.out.println("Unknown battery level " + robotId);
+                System.out.println(ANSI_RED + "Unknown battery level " + robotId);
                 continue;
             }
             boolean available = jsonObject.getBoolean("available");
             if (available) {
                 try {
                     Robot newRobot = new Robot(jsonObject);
+                    System.out.println(ANSI_GREEN + "ROBOT IS AVAILABLE: " + newRobot.getId());
                     robots.add(newRobot);
                 } catch (Exception e) {
-                    System.out.println("Error in robot data " + robotId);
+                    System.out.println(ANSI_RED + "Error in robot data " + robotId);
                 }
             }
         }
@@ -166,7 +173,7 @@ public class Dispatcher extends TimerTask {
                 updateRobotAvailability(robot.getId(), true);
                 String currentTaskId = robot.getCurrentTask().getId();
                 updateTaskStatus(currentTaskId, "done");
-                System.out.println("Done task " + currentTaskId);
+                System.out.println(ANSI_BLUE + "Done task " + currentTaskId);
             }
             this.busyRobots.remove(robot);
         }
@@ -175,7 +182,7 @@ public class Dispatcher extends TimerTask {
     private void chooseRobotAndTask() {
         Task chosenTask = this.chooseTask();
         Robot chosenRobot = this.chooseRobot(chosenTask);
-        System.out.println("Chosen robot: " + chosenRobot.getId() + " for task: " + chosenTask.getId());
+        System.out.println(ANSI_BLUE + "Chosen robot: " + chosenRobot.getId() + " for task: " + chosenTask.getId());
         int executionTime = chosenRobot.getTaskExecutionTime(chosenTask);
         chosenRobot.setCurrentTask(chosenTask);
         System.out.println("Estimated working time is: " + executionTime + " ms");
@@ -192,12 +199,13 @@ public class Dispatcher extends TimerTask {
 
     public void updateNextCheckTime() {
         if (this.busyRobots.size() == 0) {
-            System.out.println("Brak dostępnych robotów, ponowne uruchomienie algorytmu za 30 sekund");
+            System.out.println(ANSI_YELLOW + "Brak dostępnych robotów lub zadań, ponowne uruchomienie algorytmu za 30 sekund");
             this.nextCheckTime = 30000;
             return;
         } else {
-            Date nextUpdate = this.busyRobots.stream().map(Robot::getAvailableOn).min(Date::compareTo).get();
-            long difference = getDateDiff(nextUpdate, new Date());
+            List<Date> nextUpdates = this.busyRobots.stream().map(Robot::getAvailableOn).collect(Collectors.toList());
+            Date nextUpdate = Collections.min(nextUpdates);
+            long difference = getDateDiff(new Date(), nextUpdate);
             if (difference > 0) {
                 this.nextCheckTime = difference;
             } else {
