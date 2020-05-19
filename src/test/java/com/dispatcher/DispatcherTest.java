@@ -25,4 +25,68 @@ class DispatcherTest {
     @Test
     void checkEmptyRobotList() {
     }
+
+    @Test
+    void fetchAvailableRobots() {
+    }
+
+    @Test
+    void updateRobotAvailability() {
+    }
+
+    @Test
+    void chooseTask() {
+    }
+
+    @Test
+    void updateTaskStatus() {
+    }
+
+    @Test
+    void updateTaskPriority() {
+    }
+
+    @Test
+    void fetchTasks() {
+    }
+
+    @Test
+    void initWebTarget() {
+    }
+
+    @Test
+    void fetchData() {
+    }
+
+    @Test
+    void fetchObject() {
+    }
+
+    @Test
+    void fetchPoints() {
+    }
+
+    @Test
+    void sendRobotsToCharge() {
+    }
+
+    @Test
+    void testAssignTasks() {
+    }
+
+    @Test
+    void restoreRobotsAndTasks() {
+    }
+
+    @Test
+    void chooseRobotAndTask() {
+    }
+
+    @Test
+    void testUpdateNextCheckTime() {
+    }
+
+    @Test
+    void testGetDateDiff() {
+    }
 }

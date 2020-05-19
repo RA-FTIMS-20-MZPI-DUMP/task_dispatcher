@@ -39,7 +39,7 @@ public class Dispatcher extends TimerTask {
         return robots.get(0);
     }
 
-    private void fetchAvailableRobots() {
+    void fetchAvailableRobots() {
         JSONArray jsonArray = fetchData("robots/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -71,14 +71,14 @@ public class Dispatcher extends TimerTask {
         }
     }
 
-    private void  updateRobotAvailability(String id, boolean value) {
+    void updateRobotAvailability(String id, boolean value) {
         JSONObject status = fetchObject("robots/", id);
         status.put("available", value);
         WebTarget update = this.webTarget.path("robots/update");
         update.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(status.toString()));
     }
 
-    private Task chooseTask() {
+    Task chooseTask() {
         this.tasks.sort(new PriorityComparator());
         Task chosenTask = this.tasks.get(0);
         this.tasks.remove(chosenTask);
@@ -92,14 +92,14 @@ public class Dispatcher extends TimerTask {
         }
     }
 
-    private void updateTaskStatus(String id, String value) {
+    void updateTaskStatus(String id, String value) {
         JSONObject task = fetchObject("robots/tasks/", id);
         task.put("status", value);
         WebTarget update = this.webTarget.path("robots/tasks/update");
         update.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(task.toString()));
     }
 
-    private void updateTaskPriority(String id, int priority) {
+    void updateTaskPriority(String id, int priority) {
         JSONObject task = fetchObject("robots/tasks/", id);
         task.getJSONObject("priority").put("weight", priority);
         WebTarget update = this.webTarget.path("robots/tasks/update");
@@ -107,7 +107,7 @@ public class Dispatcher extends TimerTask {
     }
 
 
-    private void fetchTasks() {
+    void fetchTasks() {
         JSONArray jsonArray = fetchData("robots/tasks/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -117,7 +117,7 @@ public class Dispatcher extends TimerTask {
         }
     }
 
-    private void initWebTarget() {
+    void initWebTarget() {
         ClientConfig clientConfig = new ClientConfig();
         HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic("dispatchTest", "gBrZzVbCbMsr");
         clientConfig.register(feature);
@@ -125,19 +125,19 @@ public class Dispatcher extends TimerTask {
         this.webTarget = client.target("http://adrastea.westus2.cloudapp.azure.com:3333/");
     }
 
-    private JSONArray fetchData(String path) {
+    JSONArray fetchData(String path) {
         WebTarget data = this.webTarget.path(path);
         String json = data.request(MediaType.APPLICATION_JSON).get(String.class);
         return new JSONArray(json);
     }
 
-    private JSONObject fetchObject(String path, String id) {
+    JSONObject fetchObject(String path, String id) {
         WebTarget data = this.webTarget.path(path + id);
         String json = data.request(MediaType.APPLICATION_JSON).get(String.class);
         return new JSONObject(json);
     }
 
-    private void fetchPoints() {
+    void fetchPoints() {
         this.points.clear();
         JSONArray jsonArray = fetchData("movement/stands/all");
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -149,7 +149,7 @@ public class Dispatcher extends TimerTask {
         }
     }
 
-    private void sendRobotsToCharge() {
+    void sendRobotsToCharge() {
         //TODO
         //Sprawdz czy jakis robot potrzebuje ładowania, jeśli tak to trzeba go usunąc z availableRobots i chyba wyslac do ladowania
         //Chyba trzeba tez ustawic w bazie avaiable = false
@@ -167,7 +167,7 @@ public class Dispatcher extends TimerTask {
        }
     }
 
-    private void restoreRobotsAndTasks() {
+    void restoreRobotsAndTasks() {
         for (Robot robot: new ArrayList<Robot>(this.busyRobots)) {
             if (robot.getAvailableOn().before(new Date())) {
                 updateRobotAvailability(robot.getId(), true);
@@ -179,7 +179,7 @@ public class Dispatcher extends TimerTask {
         }
     }
 
-    private void chooseRobotAndTask() {
+    void chooseRobotAndTask() {
         Task chosenTask = this.chooseTask();
         Robot chosenRobot = this.chooseRobot(chosenTask);
         System.out.println(ANSI_BLUE + "Chosen robot: " + chosenRobot.getId() + " for task: " + chosenTask.getId());
