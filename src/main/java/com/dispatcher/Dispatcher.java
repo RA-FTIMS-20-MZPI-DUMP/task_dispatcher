@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 
 public class Dispatcher extends TimerTask {
 
+    public WebTarget getWebTarget() {
+        return webTarget;
+    }
+
     private WebTarget webTarget;
     private ArrayList<Robot> robots = new ArrayList<Robot>(); //dostepne roboty
     private ArrayList<Robot> busyRobots = new ArrayList<Robot>(); //zajete roboty
@@ -107,7 +111,7 @@ public class Dispatcher extends TimerTask {
     }
 
 
-    void fetchTasks() {
+    JSONArray fetchTasks() {
         JSONArray jsonArray = fetchData("robots/tasks/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -115,6 +119,7 @@ public class Dispatcher extends TimerTask {
                 this.tasks.add(new Task(jsonObject, this.points));
             }
         }
+        return jsonArray;
     }
 
     void initWebTarget() {

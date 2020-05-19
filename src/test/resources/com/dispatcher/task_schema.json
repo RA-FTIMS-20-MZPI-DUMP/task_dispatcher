@@ -1,0 +1,1121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+    {
+      "behaviours": [
+        {
+          "id": "string",
+          "name": "string",
+          "parameters": "string"
+        }
+      ],
+      "id": "string",
+      "name": "string",
+      "priority": {
+        "id": "string",
+        "name": "string",
+        "weight": 0
+      },
+      "robot": {
+        "available": true,
+        "battery": {
+          "id": "string",
+          "productionDate": "string",
+          "type": {
+            "capacity": "string",
+            "id": "string",
+            "maxCurrent": "string",
+            "name": "string",
+            "ratedVoltage": "string"
+          }
+        },
+        "batteryLevel": 0,
+        "extraRobotElement": {
+          "dimensions": "string",
+          "functionalityList": [
+            {
+              "id": "string",
+              "name": "string"
+            }
+          ],
+          "id": "string",
+          "name": "string"
+        },
+        "id": "string",
+        "model": {
+          "batteryType": {
+            "capacity": "string",
+            "id": "string",
+            "maxCurrent": "string",
+            "name": "string",
+            "ratedVoltage": "string"
+          },
+          "height": "string",
+          "id": "string",
+          "length": "string",
+          "maxLiftingCapacity": "string",
+          "maxVelocity": "string",
+          "name": "string",
+          "propulsionType": {
+            "id": "string",
+            "name": "string"
+          },
+          "turningRadius": "string",
+          "width": "string"
+        },
+        "pose": {
+          "orientation": {
+            "w": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        "robotIp": "string",
+        "status": [
+          {
+            "id": "string",
+            "name": "string"
+          }
+        ],
+        "timestamp": "string"
+      },
+      "startTime": "string",
+      "status": "string",
+      "userID": "string"
+    }
+  ],
+  "required": [
+    "behaviours",
+    "id",
+    "name",
+    "priority",
+    "robot",
+    "startTime",
+    "status",
+    "userID"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "behaviours": {
+      "$id": "#/properties/behaviours",
+      "type": "array",
+      "title": "The behaviours schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": [],
+      "examples": [
+        [
+          {
+            "id": "string",
+            "name": "string",
+            "parameters": "string"
+          }
+        ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "anyOf": [
+          {
+            "$id": "#/properties/behaviours/items/anyOf/0",
+            "type": "object",
+            "title": "The first anyOf schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+              {
+                "id": "string",
+                "name": "string",
+                "parameters": "string"
+              }
+            ],
+            "required": [
+              "id",
+              "name",
+              "parameters"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "$id": "#/properties/behaviours/items/anyOf/0/properties/id",
+                "type": "string",
+                "title": "The id schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "string"
+                ]
+              },
+              "name": {
+                "$id": "#/properties/behaviours/items/anyOf/0/properties/name",
+                "type": "string",
+                "title": "The name schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "string"
+                ]
+              },
+              "parameters": {
+                "$id": "#/properties/behaviours/items/anyOf/0/properties/parameters",
+                "type": "string",
+                "title": "The parameters schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "string"
+                ]
+              }
+            }
+          }
+        ],
+        "$id": "#/properties/behaviours/items"
+      }
+    },
+    "id": {
+      "$id": "#/properties/id",
+      "type": "string",
+      "title": "The id schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "string"
+      ]
+    },
+    "name": {
+      "$id": "#/properties/name",
+      "type": "string",
+      "title": "The name schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "string"
+      ]
+    },
+    "priority": {
+      "$id": "#/properties/priority",
+      "type": "object",
+      "title": "The priority schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "examples": [
+        {
+          "id": "string",
+          "name": "string",
+          "weight": 0
+        }
+      ],
+      "required": [
+        "id",
+        "name",
+        "weight"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "$id": "#/properties/priority/properties/id",
+          "type": "string",
+          "title": "The id schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "string"
+          ]
+        },
+        "name": {
+          "$id": "#/properties/priority/properties/name",
+          "type": "string",
+          "title": "The name schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "string"
+          ]
+        },
+        "weight": {
+          "$id": "#/properties/priority/properties/weight",
+          "type": "integer",
+          "title": "The weight schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0,
+          "examples": [
+            0
+          ]
+        }
+      }
+    },
+    "robot": {
+      "$id": "#/properties/robot",
+      "type": "object",
+      "title": "The robot schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "examples": [
+        {
+          "available": true,
+          "battery": {
+            "id": "string",
+            "productionDate": "string",
+            "type": {
+              "capacity": "string",
+              "id": "string",
+              "maxCurrent": "string",
+              "name": "string",
+              "ratedVoltage": "string"
+            }
+          },
+          "batteryLevel": 0,
+          "extraRobotElement": {
+            "dimensions": "string",
+            "functionalityList": [
+              {
+                "id": "string",
+                "name": "string"
+              }
+            ],
+            "id": "string",
+            "name": "string"
+          },
+          "id": "string",
+          "model": {
+            "batteryType": {
+              "capacity": "string",
+              "id": "string",
+              "maxCurrent": "string",
+              "name": "string",
+              "ratedVoltage": "string"
+            },
+            "height": "string",
+            "id": "string",
+            "length": "string",
+            "maxLiftingCapacity": "string",
+            "maxVelocity": "string",
+            "name": "string",
+            "propulsionType": {
+              "id": "string",
+              "name": "string"
+            },
+            "turningRadius": "string",
+            "width": "string"
+          },
+          "pose": {
+            "orientation": {
+              "w": 0,
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "robotIp": "string",
+          "status": [
+            {
+              "id": "string",
+              "name": "string"
+            }
+          ],
+          "timestamp": "string"
+        }
+      ],
+      "required": [
+        "available",
+        "battery",
+        "batteryLevel",
+        "extraRobotElement",
+        "id",
+        "model",
+        "pose",
+        "robotIp",
+        "status",
+        "timestamp"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "available": {
+          "$id": "#/properties/robot/properties/available",
+          "type": "boolean",
+          "title": "The available schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": false,
+          "examples": [
+            true
+          ]
+        },
+        "battery": {
+          "$id": "#/properties/robot/properties/battery",
+          "type": "object",
+          "title": "The battery schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+            {
+              "id": "string",
+              "productionDate": "string",
+              "type": {
+                "capacity": "string",
+                "id": "string",
+                "maxCurrent": "string",
+                "name": "string",
+                "ratedVoltage": "string"
+              }
+            }
+          ],
+          "required": [
+            "id",
+            "productionDate",
+            "type"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "$id": "#/properties/robot/properties/battery/properties/id",
+              "type": "string",
+              "title": "The id schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "productionDate": {
+              "$id": "#/properties/robot/properties/battery/properties/productionDate",
+              "type": "string",
+              "title": "The productionDate schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "type": {
+              "$id": "#/properties/robot/properties/battery/properties/type",
+              "type": "object",
+              "title": "The type schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": {},
+              "examples": [
+                {
+                  "capacity": "string",
+                  "id": "string",
+                  "maxCurrent": "string",
+                  "name": "string",
+                  "ratedVoltage": "string"
+                }
+              ],
+              "required": [
+                "capacity",
+                "id",
+                "maxCurrent",
+                "name",
+                "ratedVoltage"
+              ],
+              "additionalProperties": true,
+              "properties": {
+                "capacity": {
+                  "$id": "#/properties/robot/properties/battery/properties/type/properties/capacity",
+                  "type": "string",
+                  "title": "The capacity schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "id": {
+                  "$id": "#/properties/robot/properties/battery/properties/type/properties/id",
+                  "type": "string",
+                  "title": "The id schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "maxCurrent": {
+                  "$id": "#/properties/robot/properties/battery/properties/type/properties/maxCurrent",
+                  "type": "string",
+                  "title": "The maxCurrent schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "name": {
+                  "$id": "#/properties/robot/properties/battery/properties/type/properties/name",
+                  "type": "string",
+                  "title": "The name schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "ratedVoltage": {
+                  "$id": "#/properties/robot/properties/battery/properties/type/properties/ratedVoltage",
+                  "type": "string",
+                  "title": "The ratedVoltage schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "batteryLevel": {
+          "$id": "#/properties/robot/properties/batteryLevel",
+          "type": "integer",
+          "title": "The batteryLevel schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0,
+          "examples": [
+            0
+          ]
+        },
+        "extraRobotElement": {
+          "$id": "#/properties/robot/properties/extraRobotElement",
+          "type": "object",
+          "title": "The extraRobotElement schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+            {
+              "dimensions": "string",
+              "functionalityList": [
+                {
+                  "id": "string",
+                  "name": "string"
+                }
+              ],
+              "id": "string",
+              "name": "string"
+            }
+          ],
+          "required": [
+            "dimensions",
+            "functionalityList",
+            "id",
+            "name"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "dimensions": {
+              "$id": "#/properties/robot/properties/extraRobotElement/properties/dimensions",
+              "type": "string",
+              "title": "The dimensions schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "functionalityList": {
+              "$id": "#/properties/robot/properties/extraRobotElement/properties/functionalityList",
+              "type": "array",
+              "title": "The functionalityList schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": [],
+              "examples": [
+                [
+                  {
+                    "id": "string",
+                    "name": "string"
+                  }
+                ]
+              ],
+              "additionalItems": true,
+              "items": {
+                "anyOf": [
+                  {
+                    "$id": "#/properties/robot/properties/extraRobotElement/properties/functionalityList/items/anyOf/0",
+                    "type": "object",
+                    "title": "The first anyOf schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                      {
+                        "id": "string",
+                        "name": "string"
+                      }
+                    ],
+                    "required": [
+                      "id",
+                      "name"
+                    ],
+                    "additionalProperties": true,
+                    "properties": {
+                      "id": {
+                        "$id": "#/properties/robot/properties/extraRobotElement/properties/functionalityList/items/anyOf/0/properties/id",
+                        "type": "string",
+                        "title": "The id schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                          "string"
+                        ]
+                      },
+                      "name": {
+                        "$id": "#/properties/robot/properties/extraRobotElement/properties/functionalityList/items/anyOf/0/properties/name",
+                        "type": "string",
+                        "title": "The name schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                          "string"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "$id": "#/properties/robot/properties/extraRobotElement/properties/functionalityList/items"
+              }
+            },
+            "id": {
+              "$id": "#/properties/robot/properties/extraRobotElement/properties/id",
+              "type": "string",
+              "title": "The id schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "name": {
+              "$id": "#/properties/robot/properties/extraRobotElement/properties/name",
+              "type": "string",
+              "title": "The name schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            }
+          }
+        },
+        "id": {
+          "$id": "#/properties/robot/properties/id",
+          "type": "string",
+          "title": "The id schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "string"
+          ]
+        },
+        "model": {
+          "$id": "#/properties/robot/properties/model",
+          "type": "object",
+          "title": "The model schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+            {
+              "batteryType": {
+                "capacity": "string",
+                "id": "string",
+                "maxCurrent": "string",
+                "name": "string",
+                "ratedVoltage": "string"
+              },
+              "height": "string",
+              "id": "string",
+              "length": "string",
+              "maxLiftingCapacity": "string",
+              "maxVelocity": "string",
+              "name": "string",
+              "propulsionType": {
+                "id": "string",
+                "name": "string"
+              },
+              "turningRadius": "string",
+              "width": "string"
+            }
+          ],
+          "required": [
+            "batteryType",
+            "height",
+            "id",
+            "length",
+            "maxLiftingCapacity",
+            "maxVelocity",
+            "name",
+            "propulsionType",
+            "turningRadius",
+            "width"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "batteryType": {
+              "$id": "#/properties/robot/properties/model/properties/batteryType",
+              "type": "object",
+              "title": "The batteryType schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": {},
+              "examples": [
+                {
+                  "capacity": "string",
+                  "id": "string",
+                  "maxCurrent": "string",
+                  "name": "string",
+                  "ratedVoltage": "string"
+                }
+              ],
+              "required": [
+                "capacity",
+                "id",
+                "maxCurrent",
+                "name",
+                "ratedVoltage"
+              ],
+              "additionalProperties": true,
+              "properties": {
+                "capacity": {
+                  "$id": "#/properties/robot/properties/model/properties/batteryType/properties/capacity",
+                  "type": "string",
+                  "title": "The capacity schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "id": {
+                  "$id": "#/properties/robot/properties/model/properties/batteryType/properties/id",
+                  "type": "string",
+                  "title": "The id schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "maxCurrent": {
+                  "$id": "#/properties/robot/properties/model/properties/batteryType/properties/maxCurrent",
+                  "type": "string",
+                  "title": "The maxCurrent schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "name": {
+                  "$id": "#/properties/robot/properties/model/properties/batteryType/properties/name",
+                  "type": "string",
+                  "title": "The name schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "ratedVoltage": {
+                  "$id": "#/properties/robot/properties/model/properties/batteryType/properties/ratedVoltage",
+                  "type": "string",
+                  "title": "The ratedVoltage schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                }
+              }
+            },
+            "height": {
+              "$id": "#/properties/robot/properties/model/properties/height",
+              "type": "string",
+              "title": "The height schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "id": {
+              "$id": "#/properties/robot/properties/model/properties/id",
+              "type": "string",
+              "title": "The id schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "length": {
+              "$id": "#/properties/robot/properties/model/properties/length",
+              "type": "string",
+              "title": "The length schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "maxLiftingCapacity": {
+              "$id": "#/properties/robot/properties/model/properties/maxLiftingCapacity",
+              "type": "string",
+              "title": "The maxLiftingCapacity schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "maxVelocity": {
+              "$id": "#/properties/robot/properties/model/properties/maxVelocity",
+              "type": "string",
+              "title": "The maxVelocity schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "name": {
+              "$id": "#/properties/robot/properties/model/properties/name",
+              "type": "string",
+              "title": "The name schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "propulsionType": {
+              "$id": "#/properties/robot/properties/model/properties/propulsionType",
+              "type": "object",
+              "title": "The propulsionType schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": {},
+              "examples": [
+                {
+                  "id": "string",
+                  "name": "string"
+                }
+              ],
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": true,
+              "properties": {
+                "id": {
+                  "$id": "#/properties/robot/properties/model/properties/propulsionType/properties/id",
+                  "type": "string",
+                  "title": "The id schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                },
+                "name": {
+                  "$id": "#/properties/robot/properties/model/properties/propulsionType/properties/name",
+                  "type": "string",
+                  "title": "The name schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "string"
+                  ]
+                }
+              }
+            },
+            "turningRadius": {
+              "$id": "#/properties/robot/properties/model/properties/turningRadius",
+              "type": "string",
+              "title": "The turningRadius schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            },
+            "width": {
+              "$id": "#/properties/robot/properties/model/properties/width",
+              "type": "string",
+              "title": "The width schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "string"
+              ]
+            }
+          }
+        },
+        "pose": {
+          "$id": "#/properties/robot/properties/pose",
+          "type": "object",
+          "title": "The pose schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+            {
+              "orientation": {
+                "w": 0,
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ],
+          "required": [
+            "orientation",
+            "position"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "orientation": {
+              "$id": "#/properties/robot/properties/pose/properties/orientation",
+              "type": "object",
+              "title": "The orientation schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": {},
+              "examples": [
+                {
+                  "w": 0,
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              ],
+              "required": [
+                "w",
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": true,
+              "properties": {
+                "w": {
+                  "$id": "#/properties/robot/properties/pose/properties/orientation/properties/w",
+                  "type": "integer",
+                  "title": "The w schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                },
+                "x": {
+                  "$id": "#/properties/robot/properties/pose/properties/orientation/properties/x",
+                  "type": "integer",
+                  "title": "The x schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                },
+                "y": {
+                  "$id": "#/properties/robot/properties/pose/properties/orientation/properties/y",
+                  "type": "integer",
+                  "title": "The y schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                },
+                "z": {
+                  "$id": "#/properties/robot/properties/pose/properties/orientation/properties/z",
+                  "type": "integer",
+                  "title": "The z schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                }
+              }
+            },
+            "position": {
+              "$id": "#/properties/robot/properties/pose/properties/position",
+              "type": "object",
+              "title": "The position schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": {},
+              "examples": [
+                {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              ],
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": true,
+              "properties": {
+                "x": {
+                  "$id": "#/properties/robot/properties/pose/properties/position/properties/x",
+                  "type": "integer",
+                  "title": "The x schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                },
+                "y": {
+                  "$id": "#/properties/robot/properties/pose/properties/position/properties/y",
+                  "type": "integer",
+                  "title": "The y schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                },
+                "z": {
+                  "$id": "#/properties/robot/properties/pose/properties/position/properties/z",
+                  "type": "integer",
+                  "title": "The z schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "robotIp": {
+          "$id": "#/properties/robot/properties/robotIp",
+          "type": "string",
+          "title": "The robotIp schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "string"
+          ]
+        },
+        "status": {
+          "$id": "#/properties/robot/properties/status",
+          "type": "array",
+          "title": "The status schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": [],
+          "examples": [
+            [
+              {
+                "id": "string",
+                "name": "string"
+              }
+            ]
+          ],
+          "additionalItems": true,
+          "items": {
+            "anyOf": [
+              {
+                "$id": "#/properties/robot/properties/status/items/anyOf/0",
+                "type": "object",
+                "title": "The first anyOf schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": {},
+                "examples": [
+                  {
+                    "id": "string",
+                    "name": "string"
+                  }
+                ],
+                "required": [
+                  "id",
+                  "name"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "id": {
+                    "$id": "#/properties/robot/properties/status/items/anyOf/0/properties/id",
+                    "type": "string",
+                    "title": "The id schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                      "string"
+                    ]
+                  },
+                  "name": {
+                    "$id": "#/properties/robot/properties/status/items/anyOf/0/properties/name",
+                    "type": "string",
+                    "title": "The name schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                      "string"
+                    ]
+                  }
+                }
+              }
+            ],
+            "$id": "#/properties/robot/properties/status/items"
+          }
+        },
+        "timestamp": {
+          "$id": "#/properties/robot/properties/timestamp",
+          "type": "string",
+          "title": "The timestamp schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "string"
+          ]
+        }
+      }
+    },
+    "startTime": {
+      "$id": "#/properties/startTime",
+      "type": "string",
+      "title": "The startTime schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "string"
+      ]
+    },
+    "status": {
+      "$id": "#/properties/status",
+      "type": "string",
+      "title": "The status schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "string"
+      ]
+    },
+    "userID": {
+      "$id": "#/properties/userID",
+      "type": "string",
+      "title": "The userID schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "string"
+      ]
+    }
+  }
+}
