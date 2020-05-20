@@ -33,7 +33,8 @@ public class Dispatcher extends TimerTask {
         this.busyRobots = busyRobots;
     }
 
-    public Dispatcher() {}
+    public Dispatcher() {
+    }
 
 
     private Robot chooseRobot(Task task) {
@@ -228,6 +229,10 @@ public class Dispatcher extends TimerTask {
 
     public static long getDateDiff(Date date1, Date date2) {
         return date2.getTime() - date1.getTime();
+    }
+
+    public HashMap<String, Point> getPoints() {
+        return this.points;
     }
 
 }

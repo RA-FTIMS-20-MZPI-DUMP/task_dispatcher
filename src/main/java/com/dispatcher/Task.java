@@ -81,9 +81,9 @@ public class Task {
         return start;
     }
 
-    public void setStart(Point point){
-        this.start = point;
-    }
+    public void setStart(Point point){ this.start = point; }
+
+    public Point getEnd(){return end;}
 
     public void setEnd(Point point){
         this.end = point;
