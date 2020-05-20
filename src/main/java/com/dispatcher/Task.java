@@ -21,7 +21,7 @@ public class Task {
         GO_TO, DOCK, WAIT, DOCKING;
     }
 
-    Task() {}
+    Task(JSONObject jsonObject) {}
 
     Task(JSONObject jsonObject, HashMap<String, Point> points) {
         this.id = jsonObject.getString("id");
@@ -79,6 +79,14 @@ public class Task {
 
     public Point getStart() {
         return start;
+    }
+
+    public void setStart(Point point){
+        this.start = point;
+    }
+
+    public void setEnd(Point point){
+        this.end = point;
     }
 
     public String getId() { return id; }

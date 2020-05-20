@@ -27,6 +27,14 @@ class TaskTest {
     }
 
     @Test
+    void setStart() {
+    }
+
+    @Test
+    void setEnd() {
+    }
+
+    @Test
     void getId() {
     }
 }
