@@ -93,7 +93,7 @@ public class Dispatcher extends TimerTask {
     public class PriorityComparator implements Comparator<Task> {
         @Override
         public int compare(Task t1, Task t2) {
-            return t2.getPriority() - t1.getPriority();
+            return t1.getPriority() - t2.getPriority();
         }
     }
 
@@ -116,7 +116,7 @@ public class Dispatcher extends TimerTask {
         JSONArray jsonArray = fetchData("robots/tasks/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            if (jsonObject.getString("status").compareTo("done") != 0) {
+            if (jsonObject.getString("status").compareTo("to do") == 0) {
                 this.tasks.add(new Task(jsonObject, this.points));
             }
         }
@@ -231,9 +231,7 @@ public class Dispatcher extends TimerTask {
         return date2.getTime() - date1.getTime();
     }
 
-    public HashMap<String, Point> getPoints() {
-        return this.points;
-    }
+    public ArrayList<Task> getTasks() {return this.tasks;}
 
 }
 
