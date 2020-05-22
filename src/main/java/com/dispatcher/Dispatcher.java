@@ -156,9 +156,7 @@ public class Dispatcher extends TimerTask {
     }
 
     void sendRobotsToCharge() {
-        //TODO
-        //Sprawdz czy jakis robot potrzebuje ładowania, jeśli tak to trzeba go usunąc z availableRobots i chyba wyslac do ladowania
-        //Chyba trzeba tez ustawic w bazie avaiable = false
+    // TO DO
     }
 
     public void assignTasks() {
@@ -183,6 +181,7 @@ public class Dispatcher extends TimerTask {
             }
             this.busyRobots.remove(robot);
         }
+        sendRobotsToCharge();
     }
 
     void chooseRobotAndTask() {
@@ -231,7 +230,17 @@ public class Dispatcher extends TimerTask {
         return date2.getTime() - date1.getTime();
     }
 
+    public Collection<Point> getPointsValues() {return this.points.values();}
+
+    public HashMap<String,Point> getPoints() {return this.points;}
+
     public ArrayList<Task> getTasks() {return this.tasks;}
+
+    public ArrayList<Robot> getRobots() {return this.robots;}
+
+    public ArrayList<Robot> getBusyRobots() {return this.busyRobots;}
+
+    public long getNextCheckTime() {return this.nextCheckTime; }
 
 }
 

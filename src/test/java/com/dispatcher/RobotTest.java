@@ -80,4 +80,9 @@ class RobotTest {
         robot.setAvailableOn(date);
         assertEquals(date, robot.getAvailableOn());
     }
+
+    @Test
+    void getBattery() {
+        assertEquals(100, robot.getBaterry());
+    }
 }

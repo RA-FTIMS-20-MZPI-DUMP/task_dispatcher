@@ -16,10 +16,27 @@ class DispatcherTest {
 
     @Test
     void assignTasks() {
+
+
     }
 
     @Test
-    void updateNextCheckTime() {
+    void updateNextCheckTime1() {
+        dispatcher.updateNextCheckTime();
+        assertEquals(30000, dispatcher.getNextCheckTime());
+    }
+
+    @Test
+    void updateNextCheckTime2() {
+        dispatcher.initWebTarget();
+        JSONObject jsonObject = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f23412b");
+        Robot newRobot = new Robot(jsonObject);
+        Date now = new Date();
+        now.setSeconds(now.getSeconds() + 5);
+        newRobot.setAvailableOn(now);
+        dispatcher.getBusyRobots().add(newRobot);
+        dispatcher.updateNextCheckTime();
+        assertEquals(5000, dispatcher.getNextCheckTime());
     }
 
     @Test
@@ -39,7 +56,14 @@ class DispatcherTest {
 
     @Test
     void fetchAvailableRobots() {
-
+        dispatcher.initWebTarget();
+        dispatcher.fetchAvailableRobots();
+        for(Object robot : dispatcher.getRobots() ){
+            assertTrue(robot instanceof Robot);
+            Robot testRobot = (Robot) robot;
+            JSONObject jsonObject = dispatcher.fetchObject("robots/", testRobot.getId());
+            assertTrue(jsonObject.getBoolean("available"));
+        }
     }
 
     @Test
@@ -102,6 +126,12 @@ class DispatcherTest {
 
     @Test
     void fetchTasks() {
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        dispatcher.fetchTasks();
+        for(Task task : dispatcher.getTasks() ){
+            assertTrue(task instanceof Task);
+        }
     }
 
     @Test
@@ -129,18 +159,58 @@ class DispatcherTest {
 
     @Test
     void fetchPoints() {
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        for(Point point : dispatcher.getPointsValues() ){
+            assertTrue(point instanceof Point);
+        }
     }
 
     @Test
     void sendRobotsToCharge() {
+
     }
 
     @Test
     void restoreRobotsAndTasks() {
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f4909fa09ae5a06e26019");
+        Task newTask = new Task(jsonObject1, dispatcher.getPoints());
+        JSONObject jsonObject = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
+        Robot newRobot = new Robot(jsonObject);
+        Date now = new Date();
+        now.setSeconds(now.getSeconds() - 5);
+        newRobot.setAvailableOn(now);
+        newRobot.setCurrentTask(newTask);
+        dispatcher.getBusyRobots().add(newRobot);
+        dispatcher.restoreRobotsAndTasks();
+        JSONObject taskAfterUpdate = dispatcher.fetchObject("robots/tasks/", "5e8f4909fa09ae5a06e26019");
+        JSONObject robotAfterUpdate = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
+        assertEquals("done", taskAfterUpdate.getString("status"));
+        assertTrue(robotAfterUpdate.getBoolean("available"));
+
     }
 
     @Test
     void chooseRobotAndTask() {
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        JSONObject jsonObject = dispatcher.fetchObject("robots/tasks/", "5e8f4909fa09ae5a06e26019");
+        JSONObject jsonObject2 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+        Task task1 = new Task(jsonObject, dispatcher.getPoints());
+        Task task2 = new Task(jsonObject2, dispatcher.getPoints());
+        dispatcher.getTasks().add(task1);
+        dispatcher.getTasks().add(task2);
+        JSONObject jsonObject3 = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
+        JSONObject jsonObject4 = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f23412a");
+        Robot robot1 = new Robot(jsonObject3);
+        Robot robot2 = new Robot(jsonObject4);
+        dispatcher.getRobots().add(robot1);
+        dispatcher.getRobots().add(robot2);
+        dispatcher.chooseRobotAndTask();
+        assertTrue(dispatcher.getBusyRobots().contains(robot1));
+        assertFalse(dispatcher.getRobots().contains(robot1));
+        assertFalse(dispatcher.getTasks().contains(task2));
     }
-
 }

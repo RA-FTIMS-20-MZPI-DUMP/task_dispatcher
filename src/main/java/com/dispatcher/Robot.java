@@ -12,6 +12,7 @@ public class Robot {
     private double velocity;
     private Task currentTask;
     private Date availableOn;
+    private int battery;
 
     Robot(JSONObject jsonObject) {
         this.id = jsonObject.getString("id");
@@ -24,6 +25,7 @@ public class Robot {
             }
         }
         this.currentPosition = new Point(jsonObject);
+        this.battery = jsonObject.getInt("batteryLevel");
         String velocity = jsonObject.getJSONObject("model").getString("maxVelocity").split("km")[0];
         //this.velocity = Float.parseFloat(velocity) * 1000 / 3600 * 3 / 4;
         this.velocity = 0.09;
@@ -36,8 +38,6 @@ public class Robot {
         double sumTime = time * 1000 + distances / this.velocity;
         return (int) Math.round(sumTime);
     }
-
-
 
     public String getId() {
         return id;
@@ -58,4 +58,7 @@ public class Robot {
     public Date getAvailableOn() {
         return this.availableOn;
     }
+
+    public int getBaterry(){ return this.battery; }
+
 }
