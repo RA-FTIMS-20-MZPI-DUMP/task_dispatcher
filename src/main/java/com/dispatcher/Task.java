@@ -23,10 +23,6 @@ public class Task {
 
     Task(JSONObject jsonObject) {}
 
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
     Task(JSONObject jsonObject, HashMap<String, Point> points) {
         this.id = jsonObject.getString("id");
         this.name = jsonObject.getString("name");
