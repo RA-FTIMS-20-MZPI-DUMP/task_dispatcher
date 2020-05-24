@@ -189,7 +189,7 @@ class DispatcherTest {
         JSONObject robotAfterUpdate = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
         assertEquals("done", taskAfterUpdate.getString("status"));
         assertTrue(robotAfterUpdate.getBoolean("available"));
-
+        assertEquals(0, dispatcher.getBusyRobots().size());
     }
 
     @Test
@@ -199,7 +199,9 @@ class DispatcherTest {
         JSONObject jsonObject = dispatcher.fetchObject("robots/tasks/", "5e8f4909fa09ae5a06e26019");
         JSONObject jsonObject2 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
         Task task1 = new Task(jsonObject, dispatcher.getPoints());
+        task1.setPriority(2);
         Task task2 = new Task(jsonObject2, dispatcher.getPoints());
+        task2.setPriority(1);
         dispatcher.getTasks().add(task1);
         dispatcher.getTasks().add(task2);
         JSONObject jsonObject3 = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
