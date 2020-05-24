@@ -67,7 +67,7 @@ class IntegrationTest {
         dispatcher.initWebTarget();
         dispatcher.updateRobotAvailability(id, true);
         dispatcher.run();
-        assertTrue(dispatcher.getBusyRobots().stream().filter(robot -> robot.getId().equals(id)).toArray().length > 0);
+        assertTrue(dispatcher.getRobots().stream().filter(robot -> robot.getId().equals(id)).toArray().length > 0);
     }
 
     @Test
