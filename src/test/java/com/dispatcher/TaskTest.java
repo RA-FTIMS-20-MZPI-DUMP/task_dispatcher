@@ -27,7 +27,7 @@ class TaskTest {
             "},\n" + "{\n" + "\"id\": \"4jc1v2h4kjb132kj\",\n" + "\"name\": \"WAIT\",\n" + "\"parameters\": \"{\\\"time\\\":5}\"\n" + "},\n" + "{\n" + "\"id\": \"4iho231j54l213\",\n" +
             "\"name\": \"GO_TO\",\n" + "\"parameters\": \"{\\\"start\\\":\\\"5e4602ba9184b62beee348c9\\\",\\\"end\\\":\\\"5e4691cf59f001700ceaf72a\\\"}\"\n" +
             "}\n" + "],\n" + "\"startTime\": \"null\",\n" + "\"priority\": {\n" + "\"id\": \"5e19e3b19d0ce61f6f23411b\",\n" +
-            "\"name\": \"important\",\n" + "\"weight\": 1\n" + "},\n" + "\"status\": \"to do\",\n" + "\"userID\": \"user123\"\n" + "}");
+            "\"name\": \"important\",\n" + "\"weight\": 1\n" + "},\n" + "\"status\": \"new\",\n" + "\"userID\": \"user123\"\n" + "}");
 
     Point point1 = new Point(new JSONObject("{\n" + "\"id\": \"5e4602ba9184b62beee348c9\",\n" + "\"name\": \"prawy dolny rog\",\n" + "    \"pose\": {\n" + "      \"position\": {\n" +
             "\"x\": 2.6013180016895987,\n" + "\"y\": -2.0532330810546986,\n" + "\"z\": 0\n" + "},\n" + "\"orientation\": {\n" + "\"x\": -0.7056393576110463,\n" + "\"y\": 0,\n" +

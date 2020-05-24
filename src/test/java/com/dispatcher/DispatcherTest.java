@@ -97,9 +97,9 @@ class DispatcherTest {
         dispatcher.initWebTarget();
         JSONObject jsonObject = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
         if(jsonObject.getString("status").equals("rejected")){
-            dispatcher.updateTaskStatus("5e8f0102fa09ae5a06e2600f", "to do");
+            dispatcher.updateTaskStatus("5e8f0102fa09ae5a06e2600f", "new");
             JSONObject jsonObject1 =         dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
-            assertEquals(new String("to do"), jsonObject1.getString("status"));
+            assertEquals(new String("new"), jsonObject1.getString("status"));
         }
         else{
             dispatcher.updateTaskStatus("5e8f0102fa09ae5a06e2600f", "rejected");

@@ -86,6 +86,7 @@ public class Dispatcher extends TimerTask {
     Task chooseTask() {
         this.tasks.sort(new PriorityComparator());
         Task chosenTask = this.tasks.get(0);
+        this.updateTaskStatus(chosenTask.getId(), "in-progress");
         this.tasks.remove(chosenTask);
         return chosenTask;
     }
@@ -116,7 +117,7 @@ public class Dispatcher extends TimerTask {
         JSONArray jsonArray = fetchData("robots/tasks/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            if (jsonObject.getString("status").compareTo("to do") == 0) {
+            if (jsonObject.getString("status").compareTo("new") == 0) {
                 this.tasks.add(new Task(jsonObject, this.points));
             }
         }
