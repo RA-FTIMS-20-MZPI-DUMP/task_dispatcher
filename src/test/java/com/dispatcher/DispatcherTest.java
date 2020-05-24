@@ -2,6 +2,7 @@ package com.dispatcher;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.MediaType;
@@ -142,10 +143,7 @@ class DispatcherTest {
 
     @Test
     void fetchData() {
-        JSONArray jsonArray = new JSONArray("[\n" + "{\n" + "\"id\": \"test1\",\n" + "\"name\": \"test1\"\n" + "},\n" +
-                "{\n" + "\"id\": \"on the way\",\n" + "\"name\": \"on the way\"\n" + "},\n" + "{\n" + "\"id\": \"free\",\n" +
-                "\"name\": \"free\"\n" + "},\n" + "{\n" + "\"id\": \"charging needed\",\n" + "\"name\": \"charging needed\"\n" +
-                "},\n" + "{\n" + "\"id\": \"during task\",\n" + "\"name\": \"during task\"\n" + "}\n" + "]");
+        JSONArray jsonArray = new JSONArray(new JSONTokener(this.getClass().getResourceAsStream("statuses.json")));
         dispatcher.initWebTarget();
         assertEquals(jsonArray.toString(), dispatcher.fetchData("type/robot-statuses/all").toString());
     }

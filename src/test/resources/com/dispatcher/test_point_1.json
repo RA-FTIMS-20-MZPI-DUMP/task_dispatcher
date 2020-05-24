@@ -1,0 +1,29 @@
+{
+  "id": "5e4602ba9184b62beee348c9",
+  "name": "prawy dolny rog",
+  "pose": {
+    "position": {
+      "x": 2.6013180016895987,
+      "y": -2.0532330810546986,
+      "z": 0.0
+    },
+    "orientation": {
+      "x": -0.7056393576110463,
+      "y": 0.0,
+      "z": 0.7085711657908963,
+      "w": 0.0
+    }
+  },
+  "parkingType": {
+    "id": null,
+    "name": null
+  },
+  "standType": {
+    "id": "5e19e3b19d0ce61f6f234115",
+    "name": "receiving"
+  },
+  "standStatus": {
+    "id": null,
+    "name": null
+  }
+}

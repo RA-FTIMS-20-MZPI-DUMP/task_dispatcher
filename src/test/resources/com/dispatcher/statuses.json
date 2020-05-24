@@ -1,0 +1,22 @@
+[
+  {
+    "id": "test1",
+    "name": "test1"
+  },
+  {
+    "id": "on the way",
+    "name": "on the way"
+  },
+  {
+    "id": "free",
+    "name": "free"
+  },
+  {
+    "id": "charging needed",
+    "name": "charging needed"
+  },
+  {
+    "id": "during task",
+    "name": "during task"
+  }
+]

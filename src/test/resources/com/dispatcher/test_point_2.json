@@ -1,0 +1,29 @@
+{
+  "id": "5e4691cf59f001700ceaf72a",
+  "name": "A",
+  "pose": {
+    "position": {
+      "x": -0.8981947615396955,
+      "y": 0.12110796514095412,
+      "z": 0.0
+    },
+    "orientation": {
+      "x": 0.7124362556553991,
+      "y": 0.0,
+      "z": 0.7017368321726564,
+      "w": 0.0
+    }
+  },
+  "parkingType": {
+    "id": null,
+    "name": null
+  },
+  "standType": {
+    "id": "5e19e3b19d0ce61f6f234115",
+    "name": "receiving"
+  },
+  "standStatus": {
+    "id": null,
+    "name": null
+  }
+}

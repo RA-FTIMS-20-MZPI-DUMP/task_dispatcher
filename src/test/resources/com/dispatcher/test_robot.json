@@ -1,0 +1,89 @@
+{
+  "id": "qwerty",
+  "robotIp": "123.123.123.12",
+  "available": false,
+  "extraRobotElement": {
+    "id": "5e3aee7617f5305d51b5a53a",
+    "name": "qwerty",
+    "dimensions": "22x22",
+    "functionalityList": [
+      {
+        "id": "5e36ba105d542c1d96fa2087",
+        "name": "oświetlenie"
+      },
+      {
+        "id": "5e36ba295d542c1d96fa2088",
+        "name": "migacz"
+      },
+      {
+        "id": "5e36ba105d542c1d96fa2087",
+        "name": "oświetlenie"
+      },
+      {
+        "id": "5e36ba295d542c1d96fa2088",
+        "name": "migacz"
+      },
+      {
+        "id": "5e36ba105d542c1d96fa2087",
+        "name": "oświetlenie"
+      }
+    ]
+  },
+  "model": {
+    "id": "5e19e3b29d0ce61f6f234128",
+    "name": "R2D2",
+    "maxLiftingCapacity": "500kg",
+    "maxVelocity": "20km/h",
+    "length": "200cm",
+    "width": "250cm",
+    "height": "200cm",
+    "turningRadius": "30 deg",
+    "propulsionType": {
+      "id": "5e19e3b19d0ce61f6f23410a",
+      "name": "mechanical drive"
+    },
+    "batteryType": {
+      "id": null,
+      "name": "Lithium Ion",
+      "capacity": "3200",
+      "ratedVoltage": "2.1",
+      "maxCurrent": "9.0"
+    }
+  },
+  "battery": {
+    "id": null,
+    "productionDate": null,
+    "type": {
+      "id": null,
+      "name": null,
+      "capacity": null,
+      "ratedVoltage": null,
+      "maxCurrent": null
+    }
+  },
+  "pose": {
+    "position": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "orientation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 0.0
+    }
+  },
+  "batteryLevel": 100.0,
+  "status": [
+    {
+      "id": "5e19e3b19d0ce61f6f23410e",
+      "name": "on the way"
+    },
+    {
+      "id": "5e19e3b19d0ce61f6f23410f",
+      "name": "charging needed"
+    }
+  ],
+  "timestamp": "28/04/2020 14:37:24"
+}

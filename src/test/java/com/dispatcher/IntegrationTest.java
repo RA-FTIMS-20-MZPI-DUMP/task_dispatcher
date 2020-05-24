@@ -1,19 +1,13 @@
 package com.dispatcher;
-
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaLoader;
-import org.glassfish.jersey.client.ClientResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.jupiter.api.Test;
-
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-
 import java.io.InputStream;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
