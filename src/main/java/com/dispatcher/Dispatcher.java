@@ -5,8 +5,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class Dispatcher extends TimerTask {
@@ -23,7 +26,7 @@ public class Dispatcher extends TimerTask {
     private long nextCheckTime = 60000;
     static Timer timer = new Timer();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
+    private ArrayList<Future<Response>> futures = new ArrayList<Future<Response>>();
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_YELLOW = "\u001B[33m";
@@ -76,17 +79,19 @@ public class Dispatcher extends TimerTask {
         }
     }
 
-    void updateRobotAvailability(String id, boolean value) {
-        JSONObject status = fetchObject("robots/", id);
+    void updateRobotAvailability(Robot robot, boolean value) {
+        JSONObject status = robot.json;
         status.put("available", value);
         WebTarget update = this.webTarget.path("robots/update");
-        update.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(status.toString()));
+        Future<Response> future = update.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(status.toString()));
+        this.futures.add(future);
+
     }
 
     Task chooseTask() {
         this.tasks.sort(new PriorityComparator());
         Task chosenTask = this.tasks.get(0);
-        this.updateTaskStatus(chosenTask.getId(), "in-progress");
+        this.updateTaskStatus(chosenTask, "in-progress");
         this.tasks.remove(chosenTask);
         return chosenTask;
     }
@@ -98,18 +103,20 @@ public class Dispatcher extends TimerTask {
         }
     }
 
-    void updateTaskStatus(String id, String value) {
-        JSONObject task = fetchObject("robots/tasks/", id);
-        task.put("status", value);
+    void updateTaskStatus(Task task, String value) {
+        JSONObject json = task.json;
+        json.put("status", value);
         WebTarget update = this.webTarget.path("robots/tasks/update");
-        update.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(task.toString()));
+        Future<Response> future = update.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(json.toString()));
+        this.futures.add(future);
     }
 
     void updateTaskPriority(String id, int priority) {
         JSONObject task = fetchObject("robots/tasks/", id);
         task.getJSONObject("priority").put("weight", priority);
         WebTarget update = this.webTarget.path("robots/tasks/update");
-        update.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(task.toString()));
+        Future<Response> future = update.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(task.toString()));
+        this.futures.add(future);
     }
 
 
@@ -175,10 +182,10 @@ public class Dispatcher extends TimerTask {
     void restoreRobotsAndTasks() {
         for (Robot robot: new ArrayList<Robot>(this.busyRobots)) {
             if (robot.getAvailableOn().before(new Date())) {
-                updateRobotAvailability(robot.getId(), true);
-                String currentTaskId = robot.getCurrentTask().getId();
-                updateTaskStatus(currentTaskId, "done");
-                System.out.println(ANSI_BLUE + "Done task " + currentTaskId);
+                updateRobotAvailability(robot, true);
+                Task currentTask = robot.getCurrentTask();
+                updateTaskStatus(currentTask, "done");
+                System.out.println(ANSI_BLUE + "Done task " + currentTask.getId());
             }
             this.busyRobots.remove(robot);
         }
@@ -195,8 +202,8 @@ public class Dispatcher extends TimerTask {
         Date availableOn = new Date(new Date().getTime() + executionTime);
         System.out.println("Task will be end: " + sdf.format(availableOn));
         chosenRobot.setAvailableOn(availableOn);
-        updateTaskStatus(chosenTask.getId(), "in progress");
-        updateRobotAvailability(chosenRobot.getId(), false);
+        updateTaskStatus(chosenTask, "in progress");
+        updateRobotAvailability(chosenRobot, false);
         busyRobots.add(chosenRobot);
         robots.remove(chosenRobot);
         tasks.remove(chosenTask);
@@ -222,9 +229,23 @@ public class Dispatcher extends TimerTask {
     }
 
     public void run() {
+        this.waitForFutures();
         this.assignTasks();
         this.updateNextCheckTime();
+        this.waitForFutures();
         timer.schedule(new Dispatcher(this.busyRobots), this.nextCheckTime);
+    }
+
+    void waitForFutures(){
+        for (Future future: futures) {
+            try {
+                future.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static long getDateDiff(Date date1, Date date2) {

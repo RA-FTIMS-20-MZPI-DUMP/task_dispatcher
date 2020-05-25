@@ -16,14 +16,19 @@ public class Task {
     private String status;
     private Point start;
     private Point end;
+    JSONObject json;
 
     public enum BehaviourType {
         GO_TO, DOCK, WAIT, DOCKING;
     }
 
-    Task(JSONObject jsonObject) {}
+    Task(JSONObject jsonObject) {
+        this.json = jsonObject;
+        this.id = jsonObject.getString("id");
+    }
 
     Task(JSONObject jsonObject, HashMap<String, Point> points) {
+        this.json = jsonObject;
         this.id = jsonObject.getString("id");
         this.name = jsonObject.getString("name");
         this.priority = jsonObject.getJSONObject("priority").getInt("weight");

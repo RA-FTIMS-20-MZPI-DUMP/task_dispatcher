@@ -1,7 +1,7 @@
 {
   "id": "qwerty",
   "robotIp": "123.123.123.12",
-  "available": false,
+  "available": true,
   "extraRobotElement": {
     "id": "5e3aee7617f5305d51b5a53a",
     "name": "qwerty",

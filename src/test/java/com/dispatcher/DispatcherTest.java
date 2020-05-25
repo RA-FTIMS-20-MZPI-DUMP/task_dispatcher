@@ -37,7 +37,8 @@ class DispatcherTest {
         newRobot.setAvailableOn(now);
         dispatcher.getBusyRobots().add(newRobot);
         dispatcher.updateNextCheckTime();
-        assertEquals(5000, dispatcher.getNextCheckTime());
+        dispatcher.waitForFutures();
+        assertTrue(dispatcher.getNextCheckTime() != 30000);
     }
 
     @Test
@@ -59,7 +60,7 @@ class DispatcherTest {
     void fetchAvailableRobots() {
         dispatcher.initWebTarget();
         dispatcher.fetchAvailableRobots();
-        for(Object robot : dispatcher.getRobots() ){
+        for(Object robot : dispatcher.getRobots()){
             assertTrue(robot instanceof Robot);
             Robot testRobot = (Robot) robot;
             JSONObject jsonObject = dispatcher.fetchObject("robots/", testRobot.getId());
@@ -71,13 +72,16 @@ class DispatcherTest {
     void updateRobotAvailability() {
         dispatcher.initWebTarget();
         JSONObject jsonObject = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
+        Robot robot = new Robot(jsonObject);
         if(jsonObject.getBoolean("available")){
-            dispatcher.updateRobotAvailability("5e19e3b29d0ce61f6f234129", false);
+            dispatcher.updateRobotAvailability(robot, false);
+            dispatcher.waitForFutures();
             JSONObject jsonObject1 = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
             assertFalse(jsonObject1.getBoolean("available"));
         }
         else{
-            dispatcher.updateRobotAvailability("5e19e3b29d0ce61f6f234129", true);
+            dispatcher.updateRobotAvailability(robot, true);
+            dispatcher.waitForFutures();
             JSONObject jsonObject1 = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
             assertTrue(jsonObject1.getBoolean("available"));
         }
@@ -97,14 +101,17 @@ class DispatcherTest {
     void updateTaskStatus() {
         dispatcher.initWebTarget();
         JSONObject jsonObject = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+        Task task = new Task(jsonObject);
         if(jsonObject.getString("status").equals("rejected")){
-            dispatcher.updateTaskStatus("5e8f0102fa09ae5a06e2600f", "new");
-            JSONObject jsonObject1 =         dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+            dispatcher.updateTaskStatus(task, "new");
+            dispatcher.waitForFutures();
+            JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
             assertEquals(new String("new"), jsonObject1.getString("status"));
         }
         else{
-            dispatcher.updateTaskStatus("5e8f0102fa09ae5a06e2600f", "rejected");
-            JSONObject jsonObject1 =         dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+            dispatcher.updateTaskStatus(task, "rejected");
+            dispatcher.waitForFutures();
+            JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
             assertEquals(new String("rejected"), jsonObject1.getString("status"));
         }
     }
@@ -115,11 +122,13 @@ class DispatcherTest {
         JSONObject jsonObject = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
         if(jsonObject.getJSONObject("priority").getInt("weight") == 1){
             dispatcher.updateTaskPriority("5e8f0102fa09ae5a06e2600f", 2);
+            dispatcher.waitForFutures();
             JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
             assertEquals(2, jsonObject1.getJSONObject("priority").getInt("weight"));
         }
         else{
             dispatcher.updateTaskPriority("5e8f0102fa09ae5a06e2600f", 1);
+            dispatcher.waitForFutures();
             JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
             assertEquals(1, jsonObject1.getJSONObject("priority").getInt("weight"));
         }
@@ -183,6 +192,7 @@ class DispatcherTest {
         newRobot.setCurrentTask(newTask);
         dispatcher.getBusyRobots().add(newRobot);
         dispatcher.restoreRobotsAndTasks();
+        dispatcher.waitForFutures();
         JSONObject taskAfterUpdate = dispatcher.fetchObject("robots/tasks/", "5e8f4909fa09ae5a06e26019");
         JSONObject robotAfterUpdate = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
         assertEquals("done", taskAfterUpdate.getString("status"));

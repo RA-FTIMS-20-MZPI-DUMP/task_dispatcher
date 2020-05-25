@@ -13,8 +13,10 @@ public class Robot {
     private Task currentTask;
     private Date availableOn;
     private int battery;
+    JSONObject json;
 
     Robot(JSONObject jsonObject) {
+        this.json = jsonObject;
         this.id = jsonObject.getString("id");
         JSONObject extraElements = jsonObject.getJSONObject("extraRobotElement");
         if (!extraElements.isNull("functionalityList")) {
