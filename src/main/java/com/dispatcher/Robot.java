@@ -63,4 +63,6 @@ public class Robot {
 
     public int getBaterry(){ return this.battery; }
 
+    public Point getCurrentPosition() {return this.currentPosition; }
+
 }

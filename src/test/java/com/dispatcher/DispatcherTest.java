@@ -17,8 +17,8 @@ class DispatcherTest {
 
     @Test
     void assignTasks() {
-
-
+        dispatcher.assignTasks();
+        assertTrue(dispatcher.getRobots().isEmpty() || dispatcher.getTasks().isEmpty());
     }
 
     @Test
@@ -50,10 +50,44 @@ class DispatcherTest {
 
     @Test
     void checkEmptyTaskList() {
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        Task testTask = new Task(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_task.json"))), dispatcher.getPoints());
+        Robot robot1 = new Robot(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_robot2.json"))));
+        Robot robot2 = new Robot(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_robot.json"))));
+        dispatcher.getRobots().add(robot1);
+        dispatcher.getRobots().add(robot2);
+        dispatcher.getTasks().add(testTask);
+        while (dispatcher.getRobots().size() > 0 && dispatcher.getTasks().size() > 0) {
+            dispatcher.chooseRobotAndTask();
+        }
+        resetRobot(robot1.getId(), true);
+        resetRobot(robot2.getId(), true);
+        resetTask(testTask.getId(), "new");
+        assertEquals(1, dispatcher.getRobots().size());
+        assertEquals(1, dispatcher.getBusyRobots().size());
+        assertEquals(0, dispatcher.getTasks().size());
     }
 
     @Test
     void checkEmptyRobotList() {
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        Task testTask1 = new Task(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_task.json"))), dispatcher.getPoints());
+        Task testTask2 = new Task(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_task2.json"))), dispatcher.getPoints());
+        Robot robot1 = new Robot(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_robot.json"))));
+        dispatcher.getRobots().add(robot1);
+        dispatcher.getTasks().add(testTask1);
+        dispatcher.getTasks().add(testTask2);
+        while (dispatcher.getRobots().size() > 0 && dispatcher.getTasks().size() > 0) {
+            dispatcher.chooseRobotAndTask();
+        }
+        resetRobot(robot1.getId(), true);
+        resetTask(testTask1.getId(), "new");
+        resetTask(testTask2.getId(), "new");
+        assertEquals(0, dispatcher.getRobots().size());
+        assertEquals(1, dispatcher.getBusyRobots().size());
+        assertEquals(1, dispatcher.getTasks().size());
     }
 
     @Test
@@ -77,12 +111,14 @@ class DispatcherTest {
             dispatcher.updateRobotAvailability(robot, false);
             dispatcher.waitForFutures();
             JSONObject jsonObject1 = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
+            resetRobot(robot.getId(), true);
             assertFalse(jsonObject1.getBoolean("available"));
         }
         else{
             dispatcher.updateRobotAvailability(robot, true);
             dispatcher.waitForFutures();
             JSONObject jsonObject1 = dispatcher.fetchObject("robots/", "5e19e3b29d0ce61f6f234129");
+            resetRobot(robot.getId(), false);
             assertTrue(jsonObject1.getBoolean("available"));
         }
     }
@@ -106,40 +142,42 @@ class DispatcherTest {
             dispatcher.updateTaskStatus(task, "new");
             dispatcher.waitForFutures();
             JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+            resetTask(task.getId(), "rejected");
             assertEquals(new String("new"), jsonObject1.getString("status"));
         }
         else{
             dispatcher.updateTaskStatus(task, "rejected");
             dispatcher.waitForFutures();
             JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+            resetTask(task.getId(), "new");
             assertEquals(new String("rejected"), jsonObject1.getString("status"));
         }
     }
 
-    @Test
-    void updateTaskPriority() {
-        dispatcher.initWebTarget();
-        JSONObject jsonObject = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
-        if(jsonObject.getJSONObject("priority").getInt("weight") == 1){
-            dispatcher.updateTaskPriority("5e8f0102fa09ae5a06e2600f", 2);
-            dispatcher.waitForFutures();
-            JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
-            assertEquals(2, jsonObject1.getJSONObject("priority").getInt("weight"));
-        }
-        else{
-            dispatcher.updateTaskPriority("5e8f0102fa09ae5a06e2600f", 1);
-            dispatcher.waitForFutures();
-            JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
-            assertEquals(1, jsonObject1.getJSONObject("priority").getInt("weight"));
-        }
-    }
+//    @Test
+//    void updateTaskPriority() {
+//        dispatcher.initWebTarget();
+//        JSONObject jsonObject = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+//        if(jsonObject.getJSONObject("priority").getInt("weight") == 1){
+//            dispatcher.updateTaskPriority("5e8f0102fa09ae5a06e2600f", 2);
+//            dispatcher.waitForFutures();
+//            JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+//            assertEquals(2, jsonObject1.getJSONObject("priority").getInt("weight"));
+//        }
+//        else{
+//            dispatcher.updateTaskPriority("5e8f0102fa09ae5a06e2600f", 1);
+//            dispatcher.waitForFutures();
+//            JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", "5e8f0102fa09ae5a06e2600f");
+//            assertEquals(1, jsonObject1.getJSONObject("priority").getInt("weight"));
+//        }
+//    }
 
     @Test
     void fetchTasks() {
         dispatcher.initWebTarget();
         dispatcher.fetchPoints();
         dispatcher.fetchTasks();
-        for(Task task : dispatcher.getTasks() ){
+        for(Object task : dispatcher.getTasks() ){
             assertTrue(task instanceof Task);
         }
     }
@@ -168,14 +206,20 @@ class DispatcherTest {
     void fetchPoints() {
         dispatcher.initWebTarget();
         dispatcher.fetchPoints();
-        for(Point point : dispatcher.getPointsValues() ){
+        for(Object point : dispatcher.getPointsValues() ){
             assertTrue(point instanceof Point);
         }
     }
 
     @Test
     void sendRobotsToCharge() {
-
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        Robot robot1 = new Robot(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_robot2.json"))));
+        dispatcher.getRobots().add(robot1);
+        dispatcher.sendRobotsToCharge();
+        resetRobot(robot1.getId(), true);
+        assertEquals(0, dispatcher.getRobots().size());
     }
 
     @Test
@@ -219,8 +263,39 @@ class DispatcherTest {
         dispatcher.getRobots().add(robot1);
         dispatcher.getRobots().add(robot2);
         dispatcher.chooseRobotAndTask();
+        resetRobot(robot1.getId(), true);
+        resetRobot(robot2.getId(), true);
+        resetTask(task1.getId(), "new");
+        resetTask(task2.getId(), "new");
         assertTrue(dispatcher.getBusyRobots().contains(robot1));
         assertFalse(dispatcher.getRobots().contains(robot1));
         assertFalse(dispatcher.getTasks().contains(task2));
     }
+
+    @Test
+    void chooseRobot(){
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        Task testTask = new Task(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_task.json"))), dispatcher.getPoints());
+        Robot robot1 = new Robot(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_robot2.json"))));
+        Robot robot2 = new Robot(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_robot.json"))));
+        dispatcher.getRobots().add(robot1);
+        dispatcher.getRobots().add(robot2);
+        assertEquals(robot1, dispatcher.chooseRobot(testTask));
+    }
+
+    void resetRobot(String robotID, boolean value) {
+        JSONObject jsonObject = dispatcher.fetchObject("robots/", robotID);
+        Robot robot = new Robot(jsonObject);
+        dispatcher.updateRobotAvailability(robot, value);
+        dispatcher.waitForFutures();
+    }
+
+    void resetTask(String taskID, String value) {
+        JSONObject jsonObject1 = dispatcher.fetchObject("robots/tasks/", taskID);
+        Task task = new Task(jsonObject1);
+        dispatcher.updateTaskStatus(task, value);
+        dispatcher.waitForFutures();
+    }
+
 }

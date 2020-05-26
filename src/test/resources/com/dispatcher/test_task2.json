@@ -1,0 +1,103 @@
+{
+  "id": "5e8f4ef5fa09ae5a06e2601b",
+  "robot": {
+    "id": "string",
+    "robotIp": "string",
+    "available": false,
+    "extraRobotElement": {
+      "id": "string",
+      "name": "string",
+      "dimensions": "string",
+      "functionalityList": [
+        {
+          "id": "string",
+          "name": "string"
+        }
+      ]
+    },
+    "model": {
+      "id": "string",
+      "name": "string",
+      "maxLiftingCapacity": "string",
+      "maxVelocity": "string",
+      "length": "string",
+      "width": "string",
+      "height": "string",
+      "turningRadius": "string",
+      "propulsionType": {
+        "id": "string",
+        "name": "string"
+      },
+      "batteryType": {
+        "id": "string",
+        "name": "string",
+        "capacity": "string",
+        "ratedVoltage": "string",
+        "maxCurrent": "string"
+      }
+    },
+    "battery": {
+      "id": "string",
+      "productionDate": "string",
+      "type": {
+        "id": "string",
+        "name": "string",
+        "capacity": "string",
+        "ratedVoltage": "string",
+        "maxCurrent": "string"
+      }
+    },
+    "pose": {
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "batteryLevel": 0,
+    "status": [
+      {
+        "id": "string",
+        "name": "string"
+      }
+    ],
+    "timestamp": "string"
+  },
+  "name": "TestTaks1",
+  "behaviours": [
+    {
+      "id": "null",
+      "name": "GO_TO",
+      "parameters": "{\"start\":\"5e4691cf59f001700ceaf72a\",\"end\":\"5e4602ba9184b62beee348c9\"}"
+    },
+    {
+      "id": "null",
+      "name": "DOCK",
+      "parameters": ""
+    },
+    {
+      "id": "null",
+      "name": "WAIT",
+      "parameters": "{\"time\":5}"
+    },
+    {
+      "id": "null",
+      "name": "GO_TO",
+      "parameters": "{\"start\":\"5e4602ba9184b62beee348c9\",\"end\":\"5e4691cf59f001700ceaf72a\"}"
+    }
+  ],
+  "startTime": "null",
+  "priority": {
+    "id": "5e19e3b19d0ce61f6f23411b",
+    "name": "important",
+    "weight": 2
+  },
+  "status": "to do",
+  "userID": "null"
+}

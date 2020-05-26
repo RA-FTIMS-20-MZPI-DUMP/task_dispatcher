@@ -67,7 +67,8 @@ class IntegrationTest {
         Robot robot = new Robot(jsonObject);
         dispatcher.updateRobotAvailability(robot, true);
         dispatcher.run();
-        assertTrue(dispatcher.getBusyRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length > 0);
+        assertTrue((dispatcher.getBusyRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length > 0)
+                    || (dispatcher.getRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length > 0));
     }
 
     @Test
@@ -119,9 +120,16 @@ class IntegrationTest {
     }
 
     @Test
-    //Sprawdzenie zmiany statsu robota na ładowanie
     void sendRobotToCharge() {
-
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.initWebTarget();
+        dispatcher.fetchPoints();
+        Robot robot1 = new Robot(new JSONObject(new JSONTokener(this.getClass().getResourceAsStream("test_robot2.json"))));
+        dispatcher.getRobots().add(robot1);
+        dispatcher.sendRobotsToCharge();
+        dispatcher.waitForFutures();
+        JSONObject jsonObject = dispatcher.fetchObject("robots/", robot1.getId());
+        assertFalse(jsonObject.getBoolean("available"));
     }
 
     @Test
@@ -137,7 +145,7 @@ class IntegrationTest {
         dispatcher.restoreRobotsAndTasks();
         dispatcher.waitForFutures();
         JSONObject doneTask = dispatcher.fetchObject("robots/tasks/", robot.getCurrentTask().getId());
-        assertTrue(doneTask.toString().contains("done"));
+        assertEquals("done", doneTask.getString("status"));
     }
 
     @Test
@@ -148,11 +156,14 @@ class IntegrationTest {
         JSONObject jsonObject = dispatcher.fetchObject("robots/", robotId);
         Robot robot = new Robot(jsonObject);
         dispatcher.updateRobotAvailability(robot, false);
+        dispatcher.waitForFutures();
         dispatcher.run();
         assertEquals(0, dispatcher.getRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length);
         dispatcher.updateRobotAvailability(robot, true);
+        dispatcher.waitForFutures();
         dispatcher.run();
-        assertEquals(1, dispatcher.getBusyRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length);
+        assertTrue((dispatcher.getBusyRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length == 1)
+                    || dispatcher.getRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length == 1);
     }
 
     @Test

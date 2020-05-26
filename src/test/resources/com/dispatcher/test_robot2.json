@@ -1,0 +1,62 @@
+{
+  "id": "5e19e3b29d0ce61f6f234129",
+  "robotIp": "192.15.0.1",
+  "available": false,
+  "extraRobotElement": {
+    "id": "5e398130d3d13a3d57ecec88",
+    "name": "test2",
+    "dimensions": "11x92",
+    "functionalityList": [
+      {
+        "id": "5e36ba295d542c1d96fa2088",
+        "name": "migacz"
+      },
+      {
+        "id": "5e36ba105d542c1d96fa2087",
+        "name": "oswietlenie"
+      }
+    ]
+  },
+  "model": {
+    "id": "5e19e3b29d0ce61f6f234127",
+    "name": "C3P0",
+    "maxLiftingCapacity": "300kg",
+    "maxVelocity": "40km/h",
+    "length": "70cm",
+    "width": "120cm",
+    "height": "150cm",
+    "turningRadius": "45 deg",
+    "propulsionType": {
+      "id": "5e19e3b19d0ce61f6f23410a",
+      "name": "mechanical drive"
+    },
+    "batteryType": {
+      "id": "5e19e3b29d0ce61f6f234130",
+      "name": "Solar",
+      "capacity": "5200",
+      "ratedVoltage": "2.1",
+      "maxCurrent": "5.0"
+    }
+  },
+  "battery": null,
+  "pose": {
+    "position": {
+      "x": 0.04735143192407848,
+      "y": 0.00003828867735940058,
+      "z": 0.003980613115685875
+    },
+    "orientation": null
+  },
+  "batteryLevel": 8,
+  "status": [
+    {
+      "id": "5e19e3b19d0ce61f6f23410f",
+      "name": "charging needed"
+    },
+    {
+      "id": "5e19e3b19d0ce61f6f234110",
+      "name": "free"
+    }
+  ],
+  "timestamp": "12/05/2020 13:59:36"
+}

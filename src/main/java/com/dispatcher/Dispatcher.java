@@ -40,11 +40,23 @@ public class Dispatcher extends TimerTask {
     }
 
 
-    private Robot chooseRobot(Task task) {
-        //TODO
-        //Wybranie robota na podstawie czasu zakończenia zadania
-        //Teraz zwraca pierwszy z listy
-        return robots.get(0);
+    Robot chooseRobot(Task task) {
+        Robot chosenRobot = robots.get(0);
+        double minDistance = task.getStart().getDistance(chosenRobot.getCurrentPosition());
+        for(Robot robot : robots){
+            double newDistance = task.getStart().getDistance(robot.getCurrentPosition());
+            if(minDistance - newDistance >= 2){
+                chosenRobot = robot;
+                minDistance = newDistance;
+            }
+            else if((minDistance - newDistance < 2) && (minDistance - newDistance > -2)){
+                if(chosenRobot.getTaskExecutionTime(task) > robot.getTaskExecutionTime(task)){
+                    chosenRobot = robot;
+                    minDistance = newDistance;
+                }
+            }
+        }
+        return chosenRobot;
     }
 
     void fetchAvailableRobots() {
@@ -111,13 +123,13 @@ public class Dispatcher extends TimerTask {
         this.futures.add(future);
     }
 
-    void updateTaskPriority(String id, int priority) {
-        JSONObject task = fetchObject("robots/tasks/", id);
-        task.getJSONObject("priority").put("weight", priority);
-        WebTarget update = this.webTarget.path("robots/tasks/update");
-        Future<Response> future = update.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(task.toString()));
-        this.futures.add(future);
-    }
+//    void updateTaskPriority(String id, int priority) {
+//        JSONObject task = fetchObject("robots/tasks/", id);
+//        task.getJSONObject("priority").put("weight", priority);
+//        WebTarget update = this.webTarget.path("robots/tasks/update");
+//        Future<Response> future = update.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(task.toString()));
+//        this.futures.add(future);
+//    }
 
 
     JSONArray fetchTasks() {
@@ -164,7 +176,35 @@ public class Dispatcher extends TimerTask {
     }
 
     void sendRobotsToCharge() {
-    // TO DO
+        HashMap<String, Point> chargers = new HashMap<>();
+
+        JSONArray jsonArray = fetchData("movement/stands/all");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            if((jsonObject.getJSONObject("standType").getString("name").equals("charger"))){
+                chargers.put(jsonObject.getString("id"), new Point(jsonObject));
+            }
+        }
+
+        for (int i=0; i<robots.size(); i++) {
+            if(robots.get(i).getBaterry() < 10){
+                double minDistance = 10000;
+                String chosenChargerID = "";
+                for(int j=0; j<chargers.size(); j++){
+                    String key = (String)chargers.keySet().toArray()[j];
+                    if(chargers.get(key).getDistance(robots.get(i).getCurrentPosition()) < minDistance) {
+                        chosenChargerID = key;
+                        minDistance = chargers.get(key).getDistance(robots.get(i).getCurrentPosition());
+                    }
+                }
+                if(!chosenChargerID.equals("")){
+                    updateRobotAvailability(robots.get(i), false);
+                    robots.remove(robots.get(i));
+                    Task chargeTask = new Task(new JSONObject("{\"id\":\"chargeTask\",\"robot\":null,\"name\":\"chargeTask\",\"behaviours\":[{\"id\":\"null\",\"name\":\"GO_TO\",\"parameters\":\"{\\\"start\\\":\\\"5e4691cf59f001700ceaf72a\\\",\\\"end\\\":\\\"" + chosenChargerID + "\\\"}\"},{\"id\":\"null\",\"name\":\"DOCK\",\"parameters\":\"\"}],\"startTime\":\"null\",\"priority\":{\"id\":\"5e19e3b19d0ce61f6f23411b\",\"name\":\"important\",\"weight\":1},\"status\":\"to do\",\"userID\":\"null\"}"), this.points);
+                    //zlecenie zadania chargeTask robotowi
+                }
+            }
+        }
     }
 
     public void assignTasks() {
