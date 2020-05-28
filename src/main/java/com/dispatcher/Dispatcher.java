@@ -45,12 +45,12 @@ public class Dispatcher extends TimerTask {
         double minDistance = task.getStart().getDistance(chosenRobot.getCurrentPosition());
         for(Robot robot : robots){
             double newDistance = task.getStart().getDistance(robot.getCurrentPosition());
-            if(minDistance - newDistance >= 2){
+            if((minDistance - newDistance >= 2) && (robot.getBaterry() > 10)){
                 chosenRobot = robot;
                 minDistance = newDistance;
             }
             else if((minDistance - newDistance < 2) && (minDistance - newDistance > -2)){
-                if(chosenRobot.getTaskExecutionTime(task) > robot.getTaskExecutionTime(task)){
+                if((chosenRobot.getTaskExecutionTime(task) > robot.getTaskExecutionTime(task)) && (robot.getBaterry() > 10)){
                     chosenRobot = robot;
                     minDistance = newDistance;
                 }
@@ -181,7 +181,8 @@ public class Dispatcher extends TimerTask {
         JSONArray jsonArray = fetchData("movement/stands/all");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            if((jsonObject.getJSONObject("standType").getString("name").equals("charger"))){
+            if((jsonObject.getJSONObject("standType").getString("name").equals("charger"))
+            && jsonObject.getJSONObject("standStatus").getString("name").equals("free2")){
                 chargers.put(jsonObject.getString("id"), new Point(jsonObject));
             }
         }
