@@ -27,17 +27,17 @@ public class PerformanceTest {
         WebTarget robotUpdate = dispatcher.getWebTarget().path("robots/update");
         WebTarget createTask = dispatcher.getWebTarget().path("robots/tasks/add");
         WebTarget taskDelete = dispatcher.getWebTarget().path("robots/tasks/delete");
-        int numberOfTests = 100;
+        int numberOfTests = 50;
         for (int i = 0; i < numberOfTests; i++) {
             String robotId = String.format("robot%d", i);
             String taskId = String.format("task%d", i);
             robotData.put("id", robotId);
             taskData.put("id", taskId);
-            Future<Response> robotAddFuture = createRobot.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(robotData.toString()));
+            Future<Response> robotAddFuture = robotUpdate.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(robotData.toString()));
             Future<Response> taskAddFuture = createTask.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(taskData.toString()));
             addFutures.add(robotAddFuture);
             addFutures.add(taskAddFuture);
-            if (i % 20 == 0) {
+            if (i % 10 == 0) {
                 resolveFutures(addFutures);
             }
         }
@@ -52,7 +52,7 @@ public class PerformanceTest {
             Future<Response> taskDeleteFuture = taskDelete.request(MediaType.APPLICATION_JSON_TYPE).async().post(Entity.json(robotData.toString()));
             updateFutures.add(robotUpdateFuture);
             updateFutures.add(taskDeleteFuture);
-            if (i % 20 == 0) {
+            if (i % 10 == 0) {
                 resolveFutures(updateFutures);
             }
         }
