@@ -1,4 +1,10 @@
 package com.dispatcher;
+import edu.wpi.rail.jrosbridge.Ros;
+import edu.wpi.rail.jrosbridge.Topic;
+import edu.wpi.rail.jrosbridge.callback.TopicCallback;
+import edu.wpi.rail.jrosbridge.messages.Message;
+import edu.wpi.rail.jrosbridge.messages.geometry.Twist;
+import edu.wpi.rail.jrosbridge.messages.geometry.Vector3;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.JSONArray;
@@ -288,6 +294,42 @@ public class Dispatcher extends TimerTask {
             }
         }
     }
+
+    //Simulate connection to virtual robot
+    public void robotConnectionAndSim(String ip){
+        Dispatcher dispatcher = new Dispatcher();
+        System.out.println("Poczatek!");
+        //ws://54.154.155.190:9090
+        //ros(hostname) -> 54.154.155.190
+        Ros ros = new Ros(ip);
+
+        ros.connect();
+        System.out.println("Połączono z robotem !");
+
+        //ruch
+        Topic echo = new Topic(ros, "/cmd_vel", "geometry_msgs/Twist");
+        Vector3 vector3 = new Vector3(0.5,0,0);
+        Vector3 vector3x = new Vector3(0,0,0.5);
+        Twist twist = new Twist(vector3,vector3x);
+        echo.publish(twist);
+
+        System.out.println("Wyslano!");
+
+        Topic echoBack = new Topic(ros, "/odom", "nav_msgs/Odometry");
+
+        echoBack.subscribe(new TopicCallback() {
+            @Override
+            public void handleMessage(Message message) {
+                System.out.println("From ROS: " + message.toString());
+            }
+        });
+        //ros.disconnect();
+        System.out.println("PO");
+    }
+
+
+
+
 
     public static long getDateDiff(Date date1, Date date2) {
         return date2.getTime() - date1.getTime();
