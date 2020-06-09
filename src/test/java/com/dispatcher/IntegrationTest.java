@@ -66,8 +66,7 @@ class IntegrationTest {
         JSONObject jsonObject = dispatcher.fetchObject("robots/", robotId);
         Robot robot = new Robot(jsonObject);
         dispatcher.updateRobotAvailability(robot, true);
-        dispatcher.waitForFutures();
-        dispatcher.fetchAvailableRobots();
+        dispatcher.run();
         assertTrue((dispatcher.getBusyRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length > 0)
                     || (dispatcher.getRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length > 0));
     }
