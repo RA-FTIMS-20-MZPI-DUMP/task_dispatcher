@@ -66,7 +66,8 @@ class IntegrationTest {
         JSONObject jsonObject = dispatcher.fetchObject("robots/", robotId);
         Robot robot = new Robot(jsonObject);
         dispatcher.updateRobotAvailability(robot, true);
-        dispatcher.run();
+        dispatcher.waitForFutures();
+        dispatcher.fetchAvailableRobots();
         assertTrue((dispatcher.getBusyRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length > 0)
                     || (dispatcher.getRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length > 0));
     }
@@ -161,9 +162,8 @@ class IntegrationTest {
         assertEquals(0, dispatcher.getRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length);
         dispatcher.updateRobotAvailability(robot, true);
         dispatcher.waitForFutures();
-        dispatcher.run();
-        assertTrue((dispatcher.getBusyRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length == 1)
-                    || dispatcher.getRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length == 1);
+        dispatcher.fetchAvailableRobots();
+        assertEquals(1, dispatcher.getRobots().stream().filter(r -> r.getId().equals(robot.getId())).toArray().length);
     }
 
     @Test
